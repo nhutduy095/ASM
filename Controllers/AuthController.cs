@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace ASM_Student_MS.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("ASM/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -29,10 +29,10 @@ namespace ASM_Student_MS.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = await _iServices.Login(request);
-                    //if (result.accessToken != null)
-                    //{
-                    //    return Ok(result);
-                    //}
+                    if (!result.Status)
+                    {
+                        return BadRequest(result);
+                    }
                     return Ok(result);
                 }
             }

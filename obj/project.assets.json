@@ -1193,11 +1193,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\BaicuaVk\\HK4_2\\ASM_Student_MS\\ASM_Student_MS.csproj",
+      "projectUniqueName": "D:\\BaicuaVk\\HK4_2\\ASM\\ASM_Student_MS.csproj",
       "projectName": "ASM_Student_MS",
-      "projectPath": "D:\\BaicuaVk\\HK4_2\\ASM_Student_MS\\ASM_Student_MS.csproj",
+      "projectPath": "D:\\BaicuaVk\\HK4_2\\ASM\\ASM_Student_MS.csproj",
       "packagesPath": "C:\\Users\\Admin01\\.nuget\\packages\\",
-      "outputPath": "D:\\BaicuaVk\\HK4_2\\ASM_Student_MS\\obj\\",
+      "outputPath": "D:\\BaicuaVk\\HK4_2\\ASM\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1218,8 +1218,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\BaicuaVk\\HK4_2\\ASM_Student_MS\\Application\\Application.csproj": {
-              "projectPath": "D:\\BaicuaVk\\HK4_2\\ASM_Student_MS\\Application\\Application.csproj"
+            "D:\\BaicuaVk\\HK4_2\\ASM\\Application\\Application.csproj": {
+              "projectPath": "D:\\BaicuaVk\\HK4_2\\ASM\\Application\\Application.csproj"
             }
           }
         }
