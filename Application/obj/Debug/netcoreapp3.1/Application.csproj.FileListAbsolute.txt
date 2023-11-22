@@ -28,3 +28,14 @@ D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.AssemblyIn
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.CoreCompileInputs.cache
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.dll
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.pdb
+D:\BaiTap\HK4-2\ASM\Application\bin\Debug\netcoreapp3.1\Application.deps.json
+D:\BaiTap\HK4-2\ASM\Application\bin\Debug\netcoreapp3.1\Application.dll
+D:\BaiTap\HK4-2\ASM\Application\bin\Debug\netcoreapp3.1\Application.pdb
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.AssemblyReference.cache
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.AssemblyInfoInputs.cache
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.AssemblyInfo.cs
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.CoreCompileInputs.cache
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.sourcelink.json
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.dll
+D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.pdb
