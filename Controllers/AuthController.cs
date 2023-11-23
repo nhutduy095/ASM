@@ -43,7 +43,7 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("Test")]
         public async Task<IActionResult> Test()
         {

@@ -26,7 +26,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionClassAsync(lstCollectionClass, string.Empty);
+                var res =await _iServices.fnCoUCollectionClassAsync(lstCollectionClass, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -36,5 +36,35 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
 
+        [HttpPost("CreateOrUpdateCommon")]
+        public async Task<IActionResult> CreateOrUpdateCommon(List<CollectionCommon> lstCollectionCommon)
+        {
+            try
+            {
+                var res = _iServices.fnCoUCollectionCommonAsync(lstCollectionCommon, string.Empty);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HttpPost("CreateOrUpdateDepartment")]
+        public async Task<IActionResult> CreateOrUpdateDepartment(List<CollectionDepartment> lstCollectionDepartment)
+        {
+            try
+            {
+               // var res = _iServices.fnCoUCollectionClassAsync(lstCollectionDepartment, string.Empty);
+                //return Ok(res);
+                return Ok("res");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
     }
 }
