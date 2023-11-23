@@ -13,8 +13,8 @@ namespace Application.Base
         public string _id { get; set; }
         public bool IsActive { get; set; }
         public string CreateBy { get; set; }
-        public string CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public string? UpdateBy { get; set; }
-        public string UpdateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Application.IService;
 using Application.Model;
 using System.Linq;
+using System;
 
 namespace Application.Service
 {
@@ -32,6 +33,9 @@ namespace Application.Service
             ResponeModel res = new ResponeModel();
             try
             {
+                //FilterDefinition<Playlist> filter = Builders<Playlist>.Filter.Eq("Id", id);
+                //UpdateDefinition<Playlist> update = Builders<Playlist>.Update.AddToSet<string>("movieIds", movieId);
+                //await _playlistCollection.UpdateOneAsync(filter, update);
                 var dataUser = await _collUser.Find(new BsonDocument()).ToListAsync();
                 
                 var userinfor = dataUser.FirstOrDefault(x=>x.UserId==reqData.username);
@@ -58,7 +62,7 @@ namespace Application.Service
         #endregion
         #region master data
         #endregion
-        public async Task<ResponeModel> GetAsync()
+        public async Task<ResponeModel> fnGetCollectionClassAsync()
         {
             ResponeModel res = new ResponeModel();
             try
@@ -74,7 +78,39 @@ namespace Application.Service
             return res;
             
         }
-        public async Task CreateAsync(CollectionClass playlist) { }
+        public async Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstPlaylist,string userId) {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                foreach(var itm in lstPlaylist)
+                {
+                    var dataColClass = await _collClass.Find(new BsonDocument()).ToListAsync();
+
+                    var classInfo = dataColClass.FirstOrDefault(x => x.ClassId == itm.ClassId);
+                    if (classInfo == null)
+                    {
+                        itm.CreateBy = userId;
+                        itm.CreateDate = DateTime.Now;
+                        await _collClass.InsertOneAsync(itm);
+
+                    }
+                    else
+                    {
+                        itm.UpdateBy = userId;
+                        itm.UpdateDate = DateTime.Now;
+                        await _collClass.InsertOneAsync(itm);
+                    }
+                   
+                }
+                
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
         public async Task AddToPlaylistAsync(string id, string movieId) { }
         public async Task DeleteAsync(string id) { }
     }

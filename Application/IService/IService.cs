@@ -11,5 +11,6 @@ namespace Application.IService
     {
         Task<ResponeModel> GetAsync();
         Task<ResponeModel> Login(LoginRequest reqData);
+        Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstPlaylist, string userId);
     }
 }
