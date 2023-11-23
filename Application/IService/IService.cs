@@ -9,7 +9,7 @@ namespace Application.IService
 {
     public interface IServices
     {
-        Task<ResponeModel> GetAsync();
+        Task<ResponeModel> fnGetCollectionClassAsync();
         Task<ResponeModel> Login(LoginRequest reqData);
         Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstPlaylist, string userId);
     }
