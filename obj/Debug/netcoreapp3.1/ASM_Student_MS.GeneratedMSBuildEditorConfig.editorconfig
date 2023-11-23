@@ -1,3 +1,5 @@
 is_global = true
 build_property.RootNamespace = ASM_Student_MS
-build_property.ProjectDir = D:\BaicuaVk\HK4_2\ASM\
+build_property.ProjectDir = D:\BaiTap\HK4-2\ASM\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
