@@ -67,14 +67,12 @@ D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.AssemblyInfo.cs
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.csproj.CoreCompileInputs.cache
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.MvcApplicationPartsAssemblyInfo.cs
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.MvcApplicationPartsAssemblyInfo.cache
-D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.dll
-D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.pdb
-D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\obj\Debug\netcoreapp3.1\Application.sourcelink.json
-D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\appsettings.Development.json
-D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\appsettings.json
-D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\bin\Debug\netcoreapp3.1\Application.deps.json
 D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\obj\Application.csproj.nuget.dgspec.json
 D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\obj\project.assets.json
+D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\appsettings.Development.json
+D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\bin\Debug\netcoreapp3.1\Application.deps.json
+D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\Application\obj\Debug\netcoreapp3.1\Application.sourcelink.json
+D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\appsettings.json
 D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\ASM_Student_MS.exe
 D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\ASM_Student_MS.deps.json
 D:\BaicuaVk\HK4_2\ASM\bin\Debug\netcoreapp3.1\ASM_Student_MS.runtimeconfig.json
@@ -117,4 +115,6 @@ D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\staticwebassets\ASM_Student_MS.Sta
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\scopedcss\bundle\ASM_Student_MS.styles.css
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.RazorTargetAssemblyInfo.cache
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.csproj.CopyComplete
+D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.dll
+D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.pdb
 D:\BaicuaVk\HK4_2\ASM\obj\Debug\netcoreapp3.1\ASM_Student_MS.genruntimeconfig.cache
