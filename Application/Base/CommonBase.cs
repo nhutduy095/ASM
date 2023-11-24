@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Application.Base
 {
-    class CommonBase
+    public class CommonBase
     {
+        public static string fnGertDateTimeNow()
+        {
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:t");
+        }
+
     }
 }
