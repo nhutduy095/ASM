@@ -25,6 +25,17 @@ namespace Application.Service
 
         private IMongoCollection<CollectionUser> _collUser;
         private IMongoCollection<CollectionCommon> _collCommon;
+        private IMongoCollection<CollectionDepartment> _collDept;
+        private IMongoCollection<CollectionMajor> _collMajor;
+        private IMongoCollection<CollectionMajorDtl> _collMajorDtl;
+        private IMongoCollection<CollectionMarks> _collMarks;
+        private IMongoCollection<CollectionMarkDtl> _collMarkDtl;
+        private IMongoCollection<CollectionMarkDtl1> _collMarkDtl1;
+        private IMongoCollection<CollectionRoom> _collRoom;
+        private IMongoCollection<CollectionSchedule> _collSchedule;
+        private IMongoCollection<CollectionScheduleDtl> _collScheduleDtl;
+        private IMongoCollection<CollectionCheckIO> _collCheckIO;
+
         private MongoClient client;
         public IConfiguration _configuration;
         public Services(IOptions<MongoDBSettings> mongoDBSettings, IConfiguration configuration)
@@ -35,6 +46,17 @@ namespace Application.Service
             _collUserInfo = database.GetCollection<CollectionUserInfo>("tblIUser_Info");
             _collUser = database.GetCollection<CollectionUser>("tblUsers");
             _collCommon = database.GetCollection<CollectionCommon>("tblCommon");
+            _collDept = database.GetCollection<CollectionDepartment>("tblDepartment");
+            _collMajor = database.GetCollection<CollectionMajor>("tblMajor");
+            _collMajorDtl = database.GetCollection<CollectionMajorDtl>("tblMajorDtl");
+            _collMarks = database.GetCollection<CollectionMarks>("tblMarks");
+            _collMarkDtl = database.GetCollection<CollectionMarkDtl>("tblMarkDtl");
+            _collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMarkDtl1");
+            _collRoom = database.GetCollection<CollectionRoom>("tblRoom");
+            _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
+            _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblScheduleDtl");
+            _collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
+
             _configuration = configuration;
         }
         #region Auth
@@ -149,35 +171,496 @@ namespace Application.Service
         public async Task<ResponeModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId)
         {
             ResponeModel res = new ResponeModel();
-            try
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
             {
-                string dt = CommonBase.fnGertDateTimeNow();
-                foreach (var itm in lstCommon)
+                //Begin transaction
+                session.StartTransaction();
+                try
                 {
-                    var dataColCommon = await _collCommon.Find(new BsonDocument()).ToListAsync();
-
-                    var classInfo = dataColCommon.FirstOrDefault(x => x.CommonCd == itm.CommonCd);
-                    if (classInfo == null)
+                    foreach (var itm in lstCommon)
                     {
-                        itm.CreateBy = userId;
-                        itm.CreateDate = dt;
-                        await _collCommon.InsertOneAsync(itm);
+                        var fillter = Builders<CollectionClass>.Filter.Eq("CommonCd", itm.CommonCd);
+
+                        var dataColCommon = await _collCommon.Find(new BsonDocument()).ToListAsync();
+
+                        var commonInfo = dataColCommon.FirstOrDefault(x => x.CommonCd == itm.CommonCd);
+                        if (commonInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collCommon.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collCommon.ReplaceOneAsync(x => x.CommonCd == itm.CommonCd, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionDepartment>.Filter.Eq("DeptId", department.DeptId);
+
+                    var dataColDept = await _collDept.Find(new BsonDocument()).ToListAsync();
+
+                    var deptInfo = dataColDept.FirstOrDefault(x => x.DeptId == department.DeptId);
+                    if (deptInfo == null)
+                    {
+                        department.CreateBy = userId;
+                        department.CreateDate = dt;
+                        await _collDept.InsertOneAsync(department);
 
                     }
                     else
                     {
-                        itm.UpdateBy = userId;
-                        itm.UpdateDate = dt;
-                        await _collCommon.InsertOneAsync(itm);
+                        department.UpdateBy = userId;
+                        department.UpdateDate = dt;
+                        await _collDept.ReplaceOneAsync(x => x.DeptId == department.DeptId, department, new ReplaceOptions { IsUpsert = true });//update
                     }
 
+                    
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
                 }
-
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
             }
-            catch (System.Exception ex)
-            {
+            return res;
+        }
 
-                return new ResponeModel("EX001", ex.Message);
+        public async Task<ResponeModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionMajor>.Filter.Eq("MajorID", major.MajorID);
+
+                    var dataColMajor = await _collMajor.Find(new BsonDocument()).ToListAsync();
+
+                    var majorInfo = dataColMajor.FirstOrDefault(x => x.MajorID == major.MajorID);
+                    if (majorInfo == null)
+                    {
+                        major.CreateBy = userId;
+                        major.CreateDate = dt;
+                        await _collMajor.InsertOneAsync(major);
+
+                    }
+                    else
+                    {
+                        major.UpdateBy = userId;
+                        major.UpdateDate = dt;
+                        await _collMajor.ReplaceOneAsync(x => x.MajorID == major.MajorID, major, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstMajorDtl)
+                    {
+                        var fillter = Builders<CollectionMajorDtl>.Filter.Eq("MajorID", itm.MajorID);
+
+                        var dataColMajorDtl = await _collMajorDtl.Find(new BsonDocument()).ToListAsync();
+
+                        var majorDtlInfo = dataColMajorDtl.FirstOrDefault(x => x.MajorID == itm.MajorID);
+                        if (majorDtlInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collMajorDtl.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collMajorDtl.ReplaceOneAsync(x => x.MajorID == itm.MajorID, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionMarks>.Filter.Eq("MajorID", marks.MarkId);
+
+                    var dataColMarks = await _collMarks.Find(new BsonDocument()).ToListAsync();
+
+                    var marksInfo = dataColMarks.FirstOrDefault(x => x.MarkId == marks.MarkId);
+                    if (marksInfo == null)
+                    {
+                        marks.CreateBy = userId;
+                        marks.CreateDate = dt;
+                        await _collMarks.InsertOneAsync(marks);
+
+                    }
+                    else
+                    {
+                        marks.UpdateBy = userId;
+                        marks.UpdateDate = dt;
+                        await _collMarks.ReplaceOneAsync(x => x.MarkId == marks.MarkId, marks, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstMarkDtl)
+                    {
+                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("MarkDtlId", itm.MarkDtlId);
+
+                        var dataColMarkDtl = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
+
+                        var markDtlInfo = dataColMarkDtl.FirstOrDefault(x => x.MarkDtlId == itm.MarkDtlId);
+                        if (markDtlInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collMarkDtl.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collMarkDtl.ReplaceOneAsync(x => x.MarkDtlId == itm.MarkDtlId, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstMarkDtl1)
+                    {
+                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm.Id);
+
+                        var dataColMarkDtl1 = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
+
+                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x.Id == itm.Id);
+                        if (markDtl1Info == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collMarkDtl1.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collMarkDtl1.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionRoom>.Filter.Eq("RoomId", room.RoomId);
+
+                    var dataColRoom = await _collRoom.Find(new BsonDocument()).ToListAsync();
+
+                    var roomInfo = dataColRoom.FirstOrDefault(x => x.RoomId == room.RoomId);
+                    if (roomInfo == null)
+                    {
+                        room.CreateBy = userId;
+                        room.CreateDate = dt;
+                        await _collRoom.InsertOneAsync(room);
+
+                    }
+                    else
+                    {
+                        room.UpdateBy = userId;
+                        room.UpdateDate = dt;
+                        await _collRoom.ReplaceOneAsync(x => x.RoomId == room.RoomId, room, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionSchedule>.Filter.Eq("ScheduleId", schedule.ScheduleId);
+
+                    var dataColSchedule = await _collSchedule.Find(new BsonDocument()).ToListAsync();
+
+                    var scheduleInfo = dataColSchedule.FirstOrDefault(x => x.ScheduleId == schedule.ScheduleId);
+                    if (scheduleInfo == null)
+                    {
+                        schedule.CreateBy = userId;
+                        schedule.CreateDate = dt;
+                        await _collSchedule.InsertOneAsync(schedule);
+
+                    }
+                    else
+                    {
+                        schedule.UpdateBy = userId;
+                        schedule.UpdateDate = dt;
+                        await _collSchedule.ReplaceOneAsync(x => x.ScheduleId == schedule.ScheduleId, schedule, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstScheduleDtl)
+                    {
+                        var fillter = Builders<CollectionScheduleDtl>.Filter.Eq("Id", itm.Id);
+
+                        var dataColScheduleDtl = await _collScheduleDtl.Find(new BsonDocument()).ToListAsync();
+
+                        var scheduleDtlInfo = dataColScheduleDtl.FirstOrDefault(x => x.Id == itm.Id);
+                        if (scheduleDtlInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collScheduleDtl.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collScheduleDtl.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionCheckIO>.Filter.Eq("Id", checkIO.Id);
+
+                    var dataColCheckIO = await _collCheckIO.Find(new BsonDocument()).ToListAsync();
+
+                    var checkIOInfo = dataColCheckIO.FirstOrDefault(x => x.Id == checkIO.Id);
+                    if (checkIOInfo == null)
+                    {
+                        checkIO.CreateBy = userId;
+                        checkIO.CreateDate = dt;
+                        await _collCheckIO.InsertOneAsync(checkIO);
+
+                    }
+                    else
+                    {
+                        checkIO.UpdateBy = userId;
+                        checkIO.UpdateDate = dt;
+                        await _collCheckIO.ReplaceOneAsync(x => x.Id == checkIO.Id, checkIO, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
             }
             return res;
         }

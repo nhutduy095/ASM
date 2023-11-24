@@ -9,8 +9,8 @@ namespace Application.Entities
     {
         public int Id { get; set; }
         public int ScheduleId { get; set; }
-        public DateTime FromTime { get; set; }
-        public DateTime ToTime { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
         public string RoomId { get; set; }
         public string ClassId { get; set; }
         public string SubjectId { get; set; }

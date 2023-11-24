@@ -7,9 +7,8 @@ namespace Application.Entities
 {
     public class CollectionDepartment : EntityBase
     {
-        public string CommonCd { get; set; }
-        public string CommonNameEn { get; set; }
-        public string CommonNameVi { get; set; }
-        public string GroupCommon { get; set; }
+        public string DeptId { get; set; }
+        public string DeptName { get; set; }
+        
     }
 }
