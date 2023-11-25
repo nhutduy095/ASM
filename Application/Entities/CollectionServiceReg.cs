@@ -7,7 +7,7 @@ namespace Application.Entities
 {
     public class CollectionServiceReg:EntityBase
     {
-        public int Id { get; set; }
+        public int DtlID { get; set; }
         public string ServiceId { get; set; }
         public string Requester { get; set; }
         public string RequestDate { get; set; }

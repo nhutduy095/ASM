@@ -9,41 +9,41 @@ namespace Application.IService
 {
     public interface IServices
     {
-        Task<ResponeModel> fnGetCollectionClassAsync();
-        Task<ResponeModel> fnGetCollectionCommonAsync();
-        Task<ResponeModel> fnGetCollectionDepartmentAsync();
-        Task<ResponeModel> fnGetCollectionMajorAsync();
-        Task<ResponeModel> fnGetCollectionMajorDtlAsync();
-        Task<ResponeModel> fnGetCollectionMarkDtl1Async();
-        Task<ResponeModel> fnGetCollectionMarkDtlAsync();
-        Task<ResponeModel> fnGetCollectionMarksAsync();
-        Task<ResponeModel> fnGetCollectionRoomAsync();
-        Task<ResponeModel> fnGetCollectionScheduleAsync();
-        Task<ResponeModel> fnGetCollectionScheduleDtlAsync();
-        Task<ResponeModel> fnGetCollectionServiceMstAsync();
-        Task<ResponeModel> fnGetCollectionServiceRegAsync();
-        Task<ResponeModel> fnGetCollectionSubjectAsync();
-        Task<ResponeModel> fnGetCollectionUserAsync();
-        Task<ResponeModel> fnGetCollectionUserInfoAsync();
-        Task<ResponeModel> fnGetCollectionCheckIOAsync();
-        Task<ResponeModel> Login(LoginRequest reqData);
-        Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass, string userId);
-        Task<ResponeModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId);
-        Task<ResponeModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId);
-        Task<ResponeModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId);
-        Task<ResponeModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId);
-        Task<ResponeModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId);
-        Task<ResponeModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId);
-        Task<ResponeModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId);
-        Task<ResponeModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId);
-        Task<ResponeModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId);
-        Task<ResponeModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId);
-        Task<ResponeModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId);
-        Task<ResponeModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId);
-        Task<ResponeModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId);
-        Task<ResponeModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId);
-        Task<ResponeModel> fnCoUCollectionUserAsync(CollectionUser user, string userId);
-        Task<ResponeModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId);
+        Task<ResponseModel> fnGetCollectionClassAsync();
+        Task<ResponseModel> fnGetCollectionCommonAsync();
+        Task<ResponseModel> fnGetCollectionDepartmentAsync();
+        Task<ResponseModel> fnGetCollectionMajorAsync();
+        Task<ResponseModel> fnGetCollectionMajorDtlAsync();
+        Task<ResponseModel> fnGetCollectionMarkDtl1Async();
+        Task<ResponseModel> fnGetCollectionMarkDtlAsync();
+        Task<ResponseModel> fnGetCollectionMarksAsync();
+        Task<ResponseModel> fnGetCollectionRoomAsync();
+        Task<ResponseModel> fnGetCollectionScheduleAsync();
+        Task<ResponseModel> fnGetCollectionScheduleDtlAsync();
+        Task<ResponseModel> fnGetCollectionServiceMstAsync();
+        Task<ResponseModel> fnGetCollectionServiceRegAsync();
+        Task<ResponseModel> fnGetCollectionSubjectAsync();
+        Task<ResponseModel> fnGetCollectionUserAsync();
+        Task<ResponseModel> fnGetCollectionUserInfoAsync();
+        Task<ResponseModel> fnGetCollectionCheckIOAsync();
+        Task<ResponseModel> Login(LoginRequest reqData);
+        Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass, string userId);
+        Task<ResponseModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId);
+        Task<ResponseModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId);
+        Task<ResponseModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId);
+        Task<ResponseModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId);
+        Task<ResponseModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId);
+        Task<ResponseModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId);
+        Task<ResponseModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId);
+        Task<ResponseModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId);
+        Task<ResponseModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId);
+        Task<ResponseModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId);
+        Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId);
+        Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId);
+        Task<ResponseModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId);
+        Task<ResponseModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId);
+        Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId);
+        Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId);
 
 
     }
