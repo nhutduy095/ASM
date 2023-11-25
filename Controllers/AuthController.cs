@@ -51,7 +51,7 @@ namespace ASM_Student_MS.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _iServices.fnGetCollectionClassAsync();
+                    var result = await _iServices.fnGetCollectionClassAsync(request);
                     
                     return Ok(result);
                 }

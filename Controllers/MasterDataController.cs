@@ -1,6 +1,7 @@
 ﻿using Application.Authorization;
 using Application.Entities;
 using Application.IService;
+using Application.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,13 +23,33 @@ namespace ASM_Student_MS.Controllers
         #region class
         [HasPermission("ASM")]
         [HttpPost("GetCollectionClass")]
-        public async Task<IActionResult> fnGetCollectionClass()
+        public async Task<IActionResult> fnGetCollectionClass(RequestPaging request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _iServices.fnGetCollectionClassAsync();
+                    var result = await _iServices.fnGetCollectionClassAsync(request);
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionClassByID")]
+        public async Task<IActionResult> fnGetCollectionClassByID(string classId)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _iServices.fnGetCollectionClassByIDAsync(classId);
 
                     return Ok(result);
                 }

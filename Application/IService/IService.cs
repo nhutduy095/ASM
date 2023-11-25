@@ -9,7 +9,8 @@ namespace Application.IService
 {
     public interface IServices
     {
-        Task<ResponseModel> fnGetCollectionClassAsync();
+        Task<ResponseModel> fnGetCollectionClassAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionClassByIDAsync(string classId);
         Task<ResponseModel> fnGetCollectionCommonAsync();
         Task<ResponseModel> fnGetCollectionDepartmentAsync();
         Task<ResponseModel> fnGetCollectionMajorAsync();

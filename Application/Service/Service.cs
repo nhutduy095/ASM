@@ -891,12 +891,31 @@ namespace Application.Service
             return res;
         }
 
-        public async Task<ResponseModel> fnGetCollectionClassAsync()
+        public async Task<ResponseModel> fnGetCollectionClassAsync(RequestPaging request)
         {
             ResponseModel res = new ResponseModel();
             try
             {
-                var data = await _collClass.Find(new BsonDocument()).ToListAsync();
+                var data = await _collClass.Find(new BsonDocument())
+                    .SortBy(x => x.ClassId)
+                    .Skip((request.Page-1)*request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionClassByIDAsync(string classId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = Builders<CollectionClass>.Filter.Eq(x=>x.ClassId, classId);
                 res.Data = data;
             }
             catch (System.Exception ex)
