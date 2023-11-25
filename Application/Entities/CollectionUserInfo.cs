@@ -11,7 +11,7 @@ namespace Application.Entities
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public bool Sex { get; set; }
-        public bool UserType { get; set; }
+        public string UserType { get; set; }
         public string Birthday { get; set; }
         public string IdClass { get; set; }
         public string PhoneNumber { get; set; }

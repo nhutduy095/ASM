@@ -263,6 +263,22 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
-        
+        [HasPermission("ASM")]
+        [HttpPost("GetScheduleForUser")]
+        public async Task<IActionResult> fnGetScheduleForUser(CollectionServiceMst collectionServiceMst)
+        {
+            try
+            {
+                var res = _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, string.Empty);
+                return Ok(res);
+                return Ok("res");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
     }
 }
