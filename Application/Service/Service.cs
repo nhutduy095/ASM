@@ -963,11 +963,11 @@ namespace Application.Service
                 {
                     foreach (var itm in lstScheduleDtl)
                     {
-                        var fillter = Builders<CollectionScheduleDtl>.Filter.Eq("Id", itm.Id);
+                        var fillter = Builders<CollectionScheduleDtl>.Filter.Eq("DtlId", itm.DtlId);
 
                         var dataColScheduleDtl = await _collScheduleDtl.Find(new BsonDocument()).ToListAsync();
 
-                        var scheduleDtlInfo = dataColScheduleDtl.FirstOrDefault(x => x.Id == itm.Id);
+                        var scheduleDtlInfo = dataColScheduleDtl.FirstOrDefault(x => x.DtlId == itm.DtlId);
                         if (scheduleDtlInfo == null)
                         {
                             itm.CreateBy = userId;
@@ -979,7 +979,7 @@ namespace Application.Service
                         {
                             itm.UpdateBy = userId;
                             itm.UpdateDate = dt;
-                            await _collScheduleDtl.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                            await _collScheduleDtl.ReplaceOneAsync(x => x.DtlId == itm.DtlId, itm, new ReplaceOptions { IsUpsert = true });//update
                         }
 
                     }

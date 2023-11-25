@@ -583,7 +583,7 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         #endregion
-        #region
+        #region checkIO
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateCheckIO")]
         public async Task<IActionResult> CreateOrUpdateCheckIO(CollectionCheckIO collectionCheckIO)
@@ -600,6 +600,8 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionCheckIO")]
         public async Task<IActionResult> fnGetCollectionCheckIO(RequestPaging request)
         {
             try
@@ -632,6 +634,8 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         #endregion
+        #region
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateServiceMst")]
         public async Task<IActionResult> CreateOrUpdateServiceMst(CollectionServiceMst collectionServiceMst)
         {
@@ -647,6 +651,7 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
-        
+
+        #endregion
     }
 }
