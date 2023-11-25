@@ -37,10 +37,12 @@ namespace Application.Service
         private IMongoCollection<CollectionServiceReg> _collServiceReg;
         private IMongoCollection<CollectionSubject> _collSubject;
 
-        private MongoClient client;
+        private static MongoClient client;
         public IConfiguration _configuration;
+        private string ConnectionURI;
         public Services(IOptions<MongoDBSettings> mongoDBSettings, IConfiguration configuration)
         {
+            ConnectionURI = mongoDBSettings.Value.ConnectionURI;
             client = new MongoClient(mongoDBSettings.Value.ConnectionURI);
             IMongoDatabase database = client.GetDatabase(mongoDBSettings.Value.DatabaseName);
             _collClass = database.GetCollection<CollectionClass>(mongoDBSettings.Value.CollectionName);
@@ -77,12 +79,12 @@ namespace Application.Service
                 var userinfor = dataUser.FirstOrDefault(x=>x.UserId==reqData.username);
                 if (userinfor == null)
                 {
-                    return new ResponseModel("ER001", "User không tồn tại");
+                    return new ResponseModel(ErrorMessage.Error0002, "User không tồn tại");
 
                 }
                 if (userinfor.Password != reqData.password)
                 {
-                    return new ResponseModel("ER002", "Sai mật khẩu");
+                    return new ResponseModel(ErrorMessage.Error0003, "Sai mật khẩu");
                 }
                 var dataUserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
                 var userInfo = dataUserInfo.FirstOrDefault(x => x.UserId == reqData.username);
@@ -108,7 +110,7 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponseModel("EX001",ex.Message);
+                return new ResponseModel(ErrorMessage.Error0001,ex.Message);
             }
             return res;
         }
@@ -119,6 +121,7 @@ namespace Application.Service
         public async Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -164,6 +167,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -209,6 +213,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
