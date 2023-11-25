@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Application.Entities
 {
-    class CollectionUser : EntityBase
+    public class CollectionUser : EntityBase
     {
         public string UserId { get; set; }
         public string Password { get; set; }
