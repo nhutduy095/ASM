@@ -46,7 +46,7 @@ namespace ASM_Student_MS.Controllers
         //[Authorize]
         [HasPermission("ASM")]
         [HttpPost("Test")]
-        public async Task<IActionResult> Test()
+        public async Task<IActionResult> Test(RequestPaging request)
         {
             try
             {
