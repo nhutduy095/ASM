@@ -1,4 +1,5 @@
-﻿using Application.Entities;
+﻿using Application.Authorization;
+using Application.Entities;
 using Application.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace ASM_Student_MS.Controllers
 {
-    [Authorize]
-    [Route("ASM/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MasterDataController : ControllerBase
     {
@@ -20,10 +20,11 @@ namespace ASM_Student_MS.Controllers
             _iServices = iServices;
         }
 
-        [AllowAnonymous]
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateClass")]
         public async Task<IActionResult> CreateOrUpdateClass(List<CollectionClass> lstCollectionClass)
         {
+
             try
             {
                 var res =await _iServices.fnCoUCollectionClassAsync(lstCollectionClass, string.Empty);
@@ -50,7 +51,7 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
-
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateDepartment")]
         public async Task<IActionResult> CreateOrUpdateDepartment(CollectionDepartment collectionDepartment)
         {
@@ -58,7 +59,7 @@ namespace ASM_Student_MS.Controllers
             {
                 var res = _iServices.fnCoUCollectionDepartmentAsync(collectionDepartment, string.Empty);
                 return Ok(res);
-                return Ok("res");
+                //return Ok("res");
             }
             catch (Exception ex)
             {
