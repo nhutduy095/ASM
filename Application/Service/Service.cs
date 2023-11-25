@@ -48,14 +48,14 @@ namespace Application.Service
             _collCommon = database.GetCollection<CollectionCommon>("tblCommon");
             _collDept = database.GetCollection<CollectionDepartment>("tblDepartment");
             _collMajor = database.GetCollection<CollectionMajor>("tblMajor");
-            _collMajorDtl = database.GetCollection<CollectionMajorDtl>("tblMajorDtl");
+            _collMajorDtl = database.GetCollection<CollectionMajorDtl>("tblMajor_Dtl");
             _collMarks = database.GetCollection<CollectionMarks>("tblMarks");
-            _collMarkDtl = database.GetCollection<CollectionMarkDtl>("tblMarkDtl");
-            _collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMarkDtl1");
+            _collMarkDtl = database.GetCollection<CollectionMarkDtl>("tblMark_Dtl");
+            //_collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMark_Dtl1");
             _collRoom = database.GetCollection<CollectionRoom>("tblRoom");
             _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
-            _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblScheduleDtl");
-            _collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
+           // _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblSchedule_Dtl");
+            //_collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
 
             _configuration = configuration;
         }
@@ -95,8 +95,11 @@ namespace Application.Service
                     _configuration["Jwt:Audience"], claims,
                     expires: DateTime.UtcNow.AddMinutes(260),
                     signingCredentials: signIn);
-                res.ErrMessage = new JwtSecurityTokenHandler().WriteToken(token);
-                res.Data = userInfo;
+                //res.ErrMessage = new JwtSecurityTokenHandler().WriteToken(token);
+                var loginRes = new LoginRespone();
+                loginRes.Token= new JwtSecurityTokenHandler().WriteToken(token);
+                loginRes.UserInfo = userInfo;
+                res.Data = loginRes;
             }
             catch (System.Exception ex)
             {
@@ -453,11 +456,11 @@ namespace Application.Service
                 {
                     foreach (var itm in lstMarkDtl1)
                     {
-                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm.Id);
+                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm._id);
 
                         var dataColMarkDtl1 = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
 
-                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x.Id == itm.Id);
+                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x._id == itm._id);
                         if (markDtl1Info == null)
                         {
                             itm.CreateBy = userId;
@@ -469,7 +472,7 @@ namespace Application.Service
                         {
                             itm.UpdateBy = userId;
                             itm.UpdateDate = dt;
-                            await _collMarkDtl1.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                            await _collMarkDtl1.ReplaceOneAsync(x => x._id == itm._id, itm, new ReplaceOptions { IsUpsert = true });//update
                         }
 
                     }

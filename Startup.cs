@@ -1,8 +1,13 @@
+using Application.Authorization;
 using Application.IService;
+using Application.IService.Configuration;
 using Application.Service;
+using Application.Service.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +39,8 @@ namespace ASM_Student_MS
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
             services.AddTransient<IServices, Services>();
             services.AddControllers();
             //services.AddSwaggerGen(c =>
@@ -42,7 +48,7 @@ namespace ASM_Student_MS
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ASM_Student_MS", Version = "v1" });
             //});
             // configure a CORS policy
-            services.AddCors(x => x.AddPolicy("KTC_UI",
+            services.AddCors(x => x.AddPolicy("Cors",
                 s => s.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
                );
 
@@ -56,7 +62,7 @@ namespace ASM_Student_MS
                     Description = "Description for the API goes here."
                 });
 
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                /*c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header. Example : 'Bearer + [space] + token'",
                     Name = "Authorization",
@@ -81,16 +87,26 @@ namespace ASM_Student_MS
                         },
                         new List<string>()
                     }
-                });
+                });*/
 
-                // Set the comments path for the Swagger JSON and UI.
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
+            });
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(HasPermissionAttribute.HasPermissionPolicyName, policyBuilder =>
+                {
+                    policyBuilder.Requirements.Add(new HasPermissionAuthorizationRequirement());
+                    policyBuilder.AddAuthenticationSchemes("Bearer");
+                });
+                options.AddPolicy(HasPermissionsAttribute.HasPermissionsPolicyName, policyBuilder =>
+                {
+                    policyBuilder.Requirements.Add(new HasPermissionsAuthorizationRequirement());
+                    policyBuilder.AddAuthenticationSchemes("Bearer");
+                });
             });
 
+            services.AddScoped<IAuthorizationHandler, HasPermissionAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, HasPermissionsAuthorizationHandler>();
             //Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -115,8 +131,11 @@ namespace ASM_Student_MS
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASM_Student_MS v1"));
+                //app.UseDeveloperExceptionPage();
             }
-
+            //app.UseDeveloperExceptionPage();
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASM_Student_MS v1"));
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -127,6 +146,7 @@ namespace ASM_Student_MS
             {
                 endpoints.MapControllers();
             });
+            //SystemContant.KeyAuthorApi = Configuration["AppSettings:KeyAuthorApi"];
         }
     }
 }
