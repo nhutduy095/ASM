@@ -8,7 +8,7 @@ namespace Application.Entities
     public class CollectionSubject:EntityBase
     {
         public string SubjectId { get; set; }
-        public string Remark { get; set; }
+        public string SubjectName { get; set; }
         public bool IsLocked { get; set; }
         public int NumberOfCredits { get; set; }
         public string MajorType { get; set; }
