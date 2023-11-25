@@ -21,7 +21,7 @@ namespace ASM_Student_MS.Controllers
             _iServices = iServices;
         }
         #region class
-        [HasPermission("ASM")]
+        [HasPermission("ASM_T_S")]
         [HttpPost("GetCollectionClass")]
         public async Task<IActionResult> fnGetCollectionClass(RequestPaging request)
         {
@@ -41,7 +41,7 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
 
-        [HasPermission("ASM")]
+        [HasPermission("ASM_T_S")]
         [HttpGet("GetCollectionClassByID")]
         public async Task<IActionResult> fnGetCollectionClassByID(string classId)
         {
@@ -77,6 +77,42 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         #endregion
+        #region common
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionCommon")]
+        public async Task<IActionResult> fnGetCollectionCommon(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionCommonAsync(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionCommonByCommonCd")]
+        public async Task<IActionResult> fnGetCollectionCommonByCommonCd(string commonCd)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionCommonByCommonCdAsync(commonCd);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
         [HttpPost("CreateOrUpdateCommon")]
         public async Task<IActionResult> CreateOrUpdateCommon(List<CollectionCommon> lstCollectionCommon)
         {
@@ -91,6 +127,8 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        #endregion
+        #region department
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateDepartment")]
         public async Task<IActionResult> CreateOrUpdateDepartment(CollectionDepartment collectionDepartment)
@@ -107,7 +145,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionDepartment")]
+        public async Task<IActionResult> fnGetCollectionDepartment(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionDepartmentAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionDepartmentByDeptId")]
+        public async Task<IActionResult> fnGetCollectionDepartmentByDeptId(string deptId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionDepartmentByDeptIdCdAsync(deptId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region major
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateMajor")]
         public async Task<IActionResult> CreateOrUpdateMajor(CollectionMajor collectionMajor)
         {
@@ -123,7 +196,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionMajor")]
+        public async Task<IActionResult> fnGetCollectionMajor(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionMajorAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionMajorById")]
+        public async Task<IActionResult> fnGetCollectionMajorById(string majorId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionMajorByIdAsync(majorId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region majordtl
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateMajorDtl")]
         public async Task<IActionResult> CreateOrUpdateMajorDtl(List<CollectionMajorDtl> lstCollectionMajorDtl)
         {
@@ -138,7 +246,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionMajorDtl")]
+        public async Task<IActionResult> fnGetCollectionMajorDtl(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionMajorDtlAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionMajorDtlById")]
+        public async Task<IActionResult> fnGetCollectionMajorDtlById(string majorId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionMajorDtlByIdAsync(majorId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region marks
+        [HasPermission("ASM_T")]
         [HttpPost("CreateOrUpdateMarks")]
         public async Task<IActionResult> CreateOrUpdateMarks(CollectionMarks collectionMarks)
         {
@@ -154,7 +297,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionMarks")]
+        public async Task<IActionResult> fnGetCollectionMarks(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionMarksAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionMarksById")]
+        public async Task<IActionResult> fnGetCollectionMarksById(int markId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionMarksByIdAsync(markId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region markDtl
+        [HasPermission("ASM_T")]
         [HttpPost("CreateOrUpdateMarkDtl")]
         public async Task<IActionResult> CreateOrUpdateMarkDtl(List<CollectionMarkDtl> lstCollectionMarkDtl)
         {
@@ -169,7 +347,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionMarkDtl")]
+        public async Task<IActionResult> fnGetCollectionMarkDtl(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionMarkDtlAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionMarkDtlById")]
+        public async Task<IActionResult> fnGetCollectionMarkDtlById(int markId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionMarkDtlByIdAsync(markId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region markDtl1
+        [HasPermission("ASM_T")]
         [HttpPost("CreateOrUpdateMarkDtl1")]
         public async Task<IActionResult> CreateOrUpdateMarkDtl1(List<CollectionMarkDtl1> lstCollectionMarkDtl1)
         {
@@ -184,7 +397,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionMarkDtl1")]
+        public async Task<IActionResult> fnGetCollectionMarkDtl1(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionMarkDtl1Async(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionMarkDtl1ById")]
+        public async Task<IActionResult> fnGetCollectionMarkDtl1ById(int markId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionMarkDtl1ByIdAsync(markId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region room
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateRoom")]
         public async Task<IActionResult> CreateOrUpdateRoom(CollectionRoom collectionRoom)
         {
@@ -200,7 +448,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionRoom")]
+        public async Task<IActionResult> fnGetCollectionRoom(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionRoomAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionRoomById")]
+        public async Task<IActionResult> fnGetCollectionRoomById(string roomId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionRoomByIdAsync(roomId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region schedule
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateSchedule")]
         public async Task<IActionResult> CreateOrUpdateSchedule(CollectionSchedule collectionSchedule)
         {
@@ -216,7 +499,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionSchedule")]
+        public async Task<IActionResult> fnGetCollectionSchedule(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionScheduleAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionScheduleById")]
+        public async Task<IActionResult> fnGetCollectionScheduleById(int schedule)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionScheduleByIdAsync(schedule);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region scheduleDtl
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateScheduleDtl")]
         public async Task<IActionResult> CreateOrUpdateScheduleDtl(List<CollectionScheduleDtl> lstCollectionScheduleDtl)
         {
@@ -231,7 +549,42 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        [HasPermission("ASM_T_S")]
+        [HttpPost("GetCollectionScheduleDtl")]
+        public async Task<IActionResult> fnGetCollectionScheduleDtl(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionScheduleDtlAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollectionScheduleDtlById")]
+        public async Task<IActionResult> fnGetCollectionScheduleDtlById(int dtlId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionScheduleDtlByIdAsync(dtlId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region
+        [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateCheckIO")]
         public async Task<IActionResult> CreateOrUpdateCheckIO(CollectionCheckIO collectionCheckIO)
         {
@@ -247,7 +600,38 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        public async Task<IActionResult> fnGetCollectionCheckIO(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionCheckIOAsync(request);
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionCheckIOById")]
+        public async Task<IActionResult> fnGetCollectionCheckIOById(string userId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionCheckIOByIdAsync(userId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
         [HttpPost("CreateOrUpdateServiceMst")]
         public async Task<IActionResult> CreateOrUpdateServiceMst(CollectionServiceMst collectionServiceMst)
         {

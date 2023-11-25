@@ -115,9 +115,7 @@ namespace Application.Service
             return res;
         }
         #endregion
-        #region master data
-        #endregion
-        
+        #region class
         public async Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
@@ -163,6 +161,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionClassAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collClass.Find(new BsonDocument())
+                    .SortBy(x => x.ClassId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionClassByIDAsync(string classId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionClass>.Filter.Eq(x => x.ClassId, classId);
+                var data = await _collClass.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region common
         public async Task<ResponseModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -209,6 +245,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionCommonAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collCommon.Find(new BsonDocument())
+                    .SortBy(x => x.CommonCd)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionCommonByCommonCdAsync(string commonCd)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionCommon>.Filter.Eq(x => x.CommonCd, commonCd);
+                var data = await _collCommon.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region department
         public async Task<ResponseModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -254,6 +328,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionDepartmentAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collDept.Find(new BsonDocument())
+                    .SortBy(x => x.DeptId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionDepartmentByDeptIdCdAsync(string deptId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionDepartment>.Filter.Eq(x => x.DeptId, deptId);
+                var data = await _collDept.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region major
         public async Task<ResponseModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -299,6 +411,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionMajorAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMajor.Find(new BsonDocument())
+                    .SortBy(x => x.MajorID)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionMajorByIdAsync(string majorId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionMajor>.Filter.Eq(x => x.MajorID, majorId);
+                var data = await _collMajor.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region majorDtl
         public async Task<ResponseModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -345,6 +495,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionMajorDtlAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMajorDtl.Find(new BsonDocument())
+                    .SortBy(x => x.MajorID)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionMajorDtlByIdAsync(string majorId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionMajorDtl>.Filter.Eq(x => x.MajorID, majorId);
+                var data = await _collMajorDtl.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region marks
         public async Task<ResponseModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -390,6 +578,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionMarksAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMarks.Find(new BsonDocument())
+                    .SortBy(x => x.MarkId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionMarksByIdAsync(int markId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionMarks>.Filter.Eq(x => x.MarkId, markId);
+                var data = await _collMarks.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region markdtl
         public async Task<ResponseModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -436,6 +662,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionMarkDtlAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMarkDtl.Find(new BsonDocument())
+                    .SortBy(x => x.MarkId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionMarkDtlByIdAsync(int markId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionMarkDtl>.Filter.Eq(x => x.MarkId, markId);
+                var data = await _collMarkDtl.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region markdtl1
         public async Task<ResponseModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -482,6 +746,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionMarkDtl1Async(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMarkDtl1.Find(new BsonDocument())
+                    .SortBy(x => x.MarkId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionMarkDtl1ByIdAsync(int markId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionMarkDtl1>.Filter.Eq(x => x.MarkId, markId);
+                var data = await _collMarkDtl1.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region room
         public async Task<ResponseModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -527,6 +829,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionRoomAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collRoom.Find(new BsonDocument())
+                    .SortBy(x => x.RoomId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionRoomByIdAsync(string roomId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionRoom>.Filter.Eq(x => x.RoomId, roomId);
+                var data = await _collRoom.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region schedule
         public async Task<ResponseModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -572,6 +912,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionScheduleAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collSchedule.Find(new BsonDocument())
+                    .SortBy(x => x.ScheduleId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionScheduleByIdAsync(int scheduleId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionSchedule>.Filter.Eq(x => x.ScheduleId, scheduleId);
+                var data = await _collSchedule.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region scheduledtl
         public async Task<ResponseModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -618,6 +996,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionScheduleDtlAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collScheduleDtl.Find(new BsonDocument())
+                    .SortBy(x => x.DtlId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionScheduleDtlByIdAsync(int dtlId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionScheduleDtl>.Filter.Eq(x => x.DtlId, dtlId);
+                var data = await _collScheduleDtl.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region checkIO
         public async Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -663,6 +1079,43 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionCheckIOAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collCheckIO.Find(new BsonDocument())
+                    .SortBy(x => x.UserId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionCheckIOByIdAsync(string userId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionCheckIO>.Filter.Eq(x => x.UserId, userId);
+                var data = await _collCheckIO.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
         public async Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -891,190 +1344,14 @@ namespace Application.Service
             return res;
         }
 
-        public async Task<ResponseModel> fnGetCollectionClassAsync(RequestPaging request)
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collClass.Find(new BsonDocument())
-                    .SortBy(x => x.ClassId)
-                    .Skip((request.Page-1)*request.PerPage)
-                    .Limit(request.PerPage)
-                    .ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionClassByIDAsync(string classId)
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = Builders<CollectionClass>.Filter.Eq(x=>x.ClassId, classId);
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionCommonAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collCommon.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionDepartmentAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collDept.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionMajorAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collMajor.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionMajorDtlAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collMajorDtl.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionMarkDtl1Async()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionMarkDtlAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionMarksAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collMarks.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionRoomAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collRoom.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionScheduleAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collSchedule.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionScheduleDtlAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collScheduleDtl.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
+        
+        
+        
+        
+        
+        
+        
+        
         public async Task<ResponseModel> fnGetCollectionServiceMstAsync()
         {
             ResponseModel res = new ResponseModel();
@@ -1150,21 +1427,7 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task<ResponseModel> fnGetCollectionCheckIOAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collCheckIO.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
+        
         
     }
 }
