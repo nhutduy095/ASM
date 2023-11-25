@@ -212,7 +212,7 @@ namespace Application.Service
                 {
                     foreach (var itm in lstCommon)
                     {
-                        var fillter = Builders<CollectionClass>.Filter.Eq("CommonCd", itm.CommonCd);
+                        var fillter = Builders<CollectionCommon>.Filter.Eq("CommonCd", itm.CommonCd);
 
                         var dataColCommon = await _collCommon.Find(new BsonDocument()).ToListAsync();
 
