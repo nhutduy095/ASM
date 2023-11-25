@@ -19,7 +19,26 @@ namespace ASM_Student_MS.Controllers
         {
             _iServices = iServices;
         }
+        #region class
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionClass")]
+        public async Task<IActionResult> fnGetCollectionClass()
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _iServices.fnGetCollectionClassAsync();
 
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateClass")]
         public async Task<IActionResult> CreateOrUpdateClass(List<CollectionClass> lstCollectionClass)
@@ -36,7 +55,7 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
-
+        #endregion
         [HttpPost("CreateOrUpdateCommon")]
         public async Task<IActionResult> CreateOrUpdateCommon(List<CollectionCommon> lstCollectionCommon)
         {
@@ -223,5 +242,6 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+        
     }
 }

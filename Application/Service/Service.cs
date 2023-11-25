@@ -258,6 +258,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -302,6 +303,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -347,6 +349,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -391,6 +394,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -436,6 +440,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -481,6 +486,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -525,6 +531,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -569,6 +576,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -614,6 +622,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -658,6 +667,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -702,6 +712,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -747,6 +758,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -791,6 +803,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -835,6 +848,7 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
             using (var session = await client.StartSessionAsync())
             {
                 //Begin transaction
@@ -1132,7 +1146,6 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task AddToPlaylistAsync(string id, string movieId) { }
-        public async Task DeleteAsync(string id) { }
+        
     }
 }

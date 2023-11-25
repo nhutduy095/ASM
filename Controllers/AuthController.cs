@@ -43,7 +43,6 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
 
-        //[Authorize]
         [HasPermission("ASM")]
         [HttpPost("Test")]
         public async Task<IActionResult> Test()
