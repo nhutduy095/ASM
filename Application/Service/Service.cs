@@ -20,9 +20,7 @@ namespace Application.Service
     public class Services : IServices
     {
         private IMongoCollection<CollectionClass> _collClass;
-
         private  IMongoCollection<CollectionUserInfo> _collUserInfo;
-
         private IMongoCollection<CollectionUser> _collUser;
         private IMongoCollection<CollectionCommon> _collCommon;
         private IMongoCollection<CollectionDepartment> _collDept;
@@ -35,6 +33,9 @@ namespace Application.Service
         private IMongoCollection<CollectionSchedule> _collSchedule;
         private IMongoCollection<CollectionScheduleDtl> _collScheduleDtl;
         private IMongoCollection<CollectionCheckIO> _collCheckIO;
+        private IMongoCollection<CollectionServiceMst> _collServiceMst;
+        private IMongoCollection<CollectionServiceReg> _collServiceReg;
+        private IMongoCollection<CollectionSubject> _collSubject;
 
         private MongoClient client;
         public IConfiguration _configuration;
@@ -56,6 +57,9 @@ namespace Application.Service
             _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
             _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblScheduleDtl");
             _collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
+            _collServiceMst = database.GetCollection<CollectionServiceMst>("tblServiceMst");
+            _collServiceReg = database.GetCollection<CollectionServiceReg>("tblServiceReg");
+            _collSubject = database.GetCollection<CollectionSubject>("tblSubject");
 
             _configuration = configuration;
         }
@@ -108,22 +112,7 @@ namespace Application.Service
         #endregion
         #region master data
         #endregion
-        public async Task<ResponeModel> fnGetCollectionClassAsync()
-        {
-            ResponeModel res = new ResponeModel();
-            try
-            {
-                var data= await _collClass.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
-
-                return new ResponeModel("EX001", ex.Message);
-            }
-            return res;
-            
-        }
+        
         public async Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
             ResponeModel res = new ResponeModel();
             string dt = CommonBase.fnGertDateTimeNow();
@@ -213,7 +202,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -258,7 +246,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -303,7 +290,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -349,7 +335,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -394,7 +379,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -440,7 +424,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -530,7 +513,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponeModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId)
         {
             ResponeModel res = new ResponeModel();
@@ -661,6 +643,484 @@ namespace Application.Service
                     await session.AbortTransactionAsync();
                     return new ResponeModel("EX001", ex.Message);
                 }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionServiceMst>.Filter.Eq("ServiceId", serviceMst.ServiceId);
+
+                    var dataColServiceMst = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
+
+                    var serviceMstInfo = dataColServiceMst.FirstOrDefault(x => x.ServiceId == serviceMst.ServiceId);
+                    if (serviceMstInfo == null)
+                    {
+                        serviceMst.CreateBy = userId;
+                        serviceMst.CreateDate = dt;
+                        await _collServiceMst.InsertOneAsync(serviceMst);
+
+                    }
+                    else
+                    {
+                        serviceMst.UpdateBy = userId;
+                        serviceMst.UpdateDate = dt;
+                        await _collServiceMst.ReplaceOneAsync(x => x.ServiceId == serviceMst.ServiceId, serviceMst, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstServiceReg)
+                    {
+                        var fillter = Builders<CollectionServiceReg>.Filter.Eq("Id", itm.Id);
+
+                        var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
+
+                        var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.Id == itm.Id);
+                        if (serviceRegInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collServiceReg.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collServiceReg.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionSubject>.Filter.Eq("ServiceId", subject.SubjectId);
+
+                    var dataColSubject = await _collSubject.Find(new BsonDocument()).ToListAsync();
+
+                    var subjectInfo = dataColSubject.FirstOrDefault(x => x.SubjectId == subject.SubjectId);
+                    if (subjectInfo == null)
+                    {
+                        subject.CreateBy = userId;
+                        subject.CreateDate = dt;
+                        await _collSubject.InsertOneAsync(subject);
+
+                    }
+                    else
+                    {
+                        subject.UpdateBy = userId;
+                        subject.UpdateDate = dt;
+                        await _collSubject.ReplaceOneAsync(x => x.SubjectId == subject.SubjectId, subject, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionUserAsync(CollectionUser user, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+
+                    var fillter = Builders<CollectionUser>.Filter.Eq("UserId", user.UserId);
+
+                    var dataColUser = await _collUser.Find(new BsonDocument()).ToListAsync();
+
+                    var userInfo = dataColUser.FirstOrDefault(x => x.UserId == user.UserId);
+                    if (userInfo == null)
+                    {
+                        user.CreateBy = userId;
+                        user.CreateDate = dt;
+                        await _collUser.InsertOneAsync(user);
+
+                    }
+                    else
+                    {
+                        user.UpdateBy = userId;
+                        user.UpdateDate = dt;
+                        await _collUser.ReplaceOneAsync(x => x.UserId == user.UserId, user, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId)
+        {
+            ResponeModel res = new ResponeModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            using (var session = await client.StartSessionAsync())
+            {
+                //Begin transaction
+                session.StartTransaction();
+                try
+                {
+                    foreach (var itm in lstUserInfo)
+                    {
+                        var fillter = Builders<CollectionUserInfo>.Filter.Eq("UserId", itm.UserId);
+
+                        var dataColUserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+
+                        var userInfoInfo = dataColUserInfo.FirstOrDefault(x => x.UserId == itm.UserId);
+                        if (userInfoInfo == null)
+                        {
+                            itm.CreateBy = userId;
+                            itm.CreateDate = dt;
+                            await _collUserInfo.InsertOneAsync(itm);
+
+                        }
+                        else
+                        {
+                            itm.UpdateBy = userId;
+                            itm.UpdateDate = dt;
+                            await _collUserInfo.ReplaceOneAsync(x => x.UserId == itm.UserId, itm, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                    }
+                    // Made it here without error? Let's commit the transaction
+                    await session.CommitTransactionAsync();
+
+                }
+                catch (System.Exception ex)
+                {
+                    //rollback
+                    await session.AbortTransactionAsync();
+                    return new ResponeModel("EX001", ex.Message);
+                }
+            }
+            return res;
+        }
+
+        public async Task<ResponeModel> fnGetCollectionClassAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collClass.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionCommonAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collCommon.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionDepartmentAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collDept.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionMajorAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collMajor.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionMajorDtlAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collMajorDtl.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionMarkDtl1Async()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionMarkDtlAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionMarksAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collMarks.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionRoomAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collRoom.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionScheduleAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collSchedule.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionScheduleDtlAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collScheduleDtl.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionServiceMstAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionServiceRegAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionSubjectAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collSubject.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionUserAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collUser.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionUserInfoAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponeModel> fnGetCollectionCheckIOAsync()
+        {
+            ResponeModel res = new ResponeModel();
+            try
+            {
+                var data = await _collCheckIO.Find(new BsonDocument()).ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponeModel("EX001", ex.Message);
             }
             return res;
         }
