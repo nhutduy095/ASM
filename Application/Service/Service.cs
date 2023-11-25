@@ -49,24 +49,24 @@ namespace Application.Service
             _collCommon = database.GetCollection<CollectionCommon>("tblCommon");
             _collDept = database.GetCollection<CollectionDepartment>("tblDepartment");
             _collMajor = database.GetCollection<CollectionMajor>("tblMajor");
-            _collMajorDtl = database.GetCollection<CollectionMajorDtl>("tblMajorDtl");
+            _collMajorDtl = database.GetCollection<CollectionMajorDtl>("tblMajor_Dtl");
             _collMarks = database.GetCollection<CollectionMarks>("tblMarks");
-            _collMarkDtl = database.GetCollection<CollectionMarkDtl>("tblMarkDtl");
-            _collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMarkDtl1");
+            _collMarkDtl = database.GetCollection<CollectionMarkDtl>("tblMark_Dtl");
+            //_collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMark_Dtl1");
             _collRoom = database.GetCollection<CollectionRoom>("tblRoom");
             _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
-            _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblScheduleDtl");
-            _collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
+           // _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblSchedule_Dtl");
+            //_collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
             _collServiceMst = database.GetCollection<CollectionServiceMst>("tblServiceMst");
-            _collServiceReg = database.GetCollection<CollectionServiceReg>("tblServiceReg");
+            _collServiceReg = database.GetCollection<CollectionServiceReg>("tblService_Reg");
             _collSubject = database.GetCollection<CollectionSubject>("tblSubject");
 
             _configuration = configuration;
         }
         #region Auth
-        public async Task<ResponeModel> Login(LoginRequest reqData)
+        public async Task<ResponseModel> Login(LoginRequest reqData)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 //FilterDefinition<Playlist> filter = Builders<Playlist>.Filter.Eq("Id", id);
@@ -77,12 +77,12 @@ namespace Application.Service
                 var userinfor = dataUser.FirstOrDefault(x=>x.UserId==reqData.username);
                 if (userinfor == null)
                 {
-                    return new ResponeModel("ER001", "User không tồn tại");
+                    return new ResponseModel("ER001", "User không tồn tại");
 
                 }
                 if (userinfor.Password != reqData.password)
                 {
-                    return new ResponeModel("ER002", "Sai mật khẩu");
+                    return new ResponseModel("ER002", "Sai mật khẩu");
                 }
                 var dataUserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
                 var userInfo = dataUserInfo.FirstOrDefault(x => x.UserId == reqData.username);
@@ -99,13 +99,16 @@ namespace Application.Service
                     _configuration["Jwt:Audience"], claims,
                     expires: DateTime.UtcNow.AddMinutes(260),
                     signingCredentials: signIn);
-                res.ErrMessage = new JwtSecurityTokenHandler().WriteToken(token);
-                res.Data = userInfo;
+                //res.ErrMessage = new JwtSecurityTokenHandler().WriteToken(token);
+                var loginRes = new LoginRespone();
+                loginRes.Token= new JwtSecurityTokenHandler().WriteToken(token);
+                loginRes.UserInfo = userInfo;
+                res.Data = loginRes;
             }
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001",ex.Message);
+                return new ResponseModel("EX001",ex.Message);
             }
             return res;
         }
@@ -113,8 +116,8 @@ namespace Application.Service
         #region master data
         #endregion
         
-        public async Task<ResponeModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
-            ResponeModel res = new ResponeModel();
+        public async Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -152,14 +155,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId)
+        public async Task<ResponseModel> fnCoUCollectionCommonAsync(List<CollectionCommon> lstCommon, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -197,14 +200,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId)
+        public async Task<ResponseModel> fnCoUCollectionDepartmentAsync(CollectionDepartment department, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -241,14 +244,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId)
+        public async Task<ResponseModel> fnCoUCollectionMajorAsync(CollectionMajor major, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -285,14 +288,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
+        public async Task<ResponseModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -330,14 +333,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId)
+        public async Task<ResponseModel> fnCoUCollectionMarksAsync(CollectionMarks marks, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -374,14 +377,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId)
+        public async Task<ResponseModel> fnCoUCollectionMarkDtlAsync(List<CollectionMarkDtl> lstMarkDtl, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -419,14 +422,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId)
+        public async Task<ResponseModel> fnCoUCollectionMarkDtl1Async(List<CollectionMarkDtl1> lstMarkDtl1, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -436,11 +439,11 @@ namespace Application.Service
                 {
                     foreach (var itm in lstMarkDtl1)
                     {
-                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm.Id);
+                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm._id);
 
                         var dataColMarkDtl1 = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
 
-                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x.Id == itm.Id);
+                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x._id == itm._id);
                         if (markDtl1Info == null)
                         {
                             itm.CreateBy = userId;
@@ -452,7 +455,7 @@ namespace Application.Service
                         {
                             itm.UpdateBy = userId;
                             itm.UpdateDate = dt;
-                            await _collMarkDtl1.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                            await _collMarkDtl1.ReplaceOneAsync(x => x._id == itm._id, itm, new ReplaceOptions { IsUpsert = true });//update
                         }
 
                     }
@@ -464,14 +467,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId)
+        public async Task<ResponseModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -508,14 +511,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId)
+        public async Task<ResponseModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -552,14 +555,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId)
+        public async Task<ResponseModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -597,14 +600,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId)
+        public async Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -641,14 +644,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId)
+        public async Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -685,14 +688,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId)
+        public async Task<ResponseModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -702,11 +705,11 @@ namespace Application.Service
                 {
                     foreach (var itm in lstServiceReg)
                     {
-                        var fillter = Builders<CollectionServiceReg>.Filter.Eq("Id", itm.Id);
+                        var fillter = Builders<CollectionServiceReg>.Filter.Eq("Id", itm.DtlID);
 
                         var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
 
-                        var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.Id == itm.Id);
+                        var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == itm.DtlID);
                         if (serviceRegInfo == null)
                         {
                             itm.CreateBy = userId;
@@ -718,7 +721,7 @@ namespace Application.Service
                         {
                             itm.UpdateBy = userId;
                             itm.UpdateDate = dt;
-                            await _collServiceReg.ReplaceOneAsync(x => x.Id == itm.Id, itm, new ReplaceOptions { IsUpsert = true });//update
+                            await _collServiceReg.ReplaceOneAsync(x => x.DtlID == itm.DtlID, itm, new ReplaceOptions { IsUpsert = true });//update
                         }
 
                     }
@@ -730,14 +733,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId)
+        public async Task<ResponseModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -774,14 +777,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionUserAsync(CollectionUser user, string userId)
+        public async Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -818,14 +821,14 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
-        public async Task<ResponeModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId)
+        public async Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId)
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             using (var session = await client.StartSessionAsync())
             {
@@ -863,15 +866,15 @@ namespace Application.Service
                 {
                     //rollback
                     await session.AbortTransactionAsync();
-                    return new ResponeModel("EX001", ex.Message);
+                    return new ResponseModel("EX001", ex.Message);
                 }
             }
             return res;
         }
 
-        public async Task<ResponeModel> fnGetCollectionClassAsync()
+        public async Task<ResponseModel> fnGetCollectionClassAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collClass.Find(new BsonDocument()).ToListAsync();
@@ -880,13 +883,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionCommonAsync()
+        public async Task<ResponseModel> fnGetCollectionCommonAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collCommon.Find(new BsonDocument()).ToListAsync();
@@ -895,13 +898,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionDepartmentAsync()
+        public async Task<ResponseModel> fnGetCollectionDepartmentAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collDept.Find(new BsonDocument()).ToListAsync();
@@ -910,13 +913,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionMajorAsync()
+        public async Task<ResponseModel> fnGetCollectionMajorAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collMajor.Find(new BsonDocument()).ToListAsync();
@@ -925,13 +928,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionMajorDtlAsync()
+        public async Task<ResponseModel> fnGetCollectionMajorDtlAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collMajorDtl.Find(new BsonDocument()).ToListAsync();
@@ -940,13 +943,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionMarkDtl1Async()
+        public async Task<ResponseModel> fnGetCollectionMarkDtl1Async()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
@@ -955,13 +958,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionMarkDtlAsync()
+        public async Task<ResponseModel> fnGetCollectionMarkDtlAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
@@ -970,13 +973,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionMarksAsync()
+        public async Task<ResponseModel> fnGetCollectionMarksAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collMarks.Find(new BsonDocument()).ToListAsync();
@@ -985,13 +988,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionRoomAsync()
+        public async Task<ResponseModel> fnGetCollectionRoomAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collRoom.Find(new BsonDocument()).ToListAsync();
@@ -1000,13 +1003,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionScheduleAsync()
+        public async Task<ResponseModel> fnGetCollectionScheduleAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collSchedule.Find(new BsonDocument()).ToListAsync();
@@ -1015,13 +1018,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionScheduleDtlAsync()
+        public async Task<ResponseModel> fnGetCollectionScheduleDtlAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collScheduleDtl.Find(new BsonDocument()).ToListAsync();
@@ -1030,13 +1033,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionServiceMstAsync()
+        public async Task<ResponseModel> fnGetCollectionServiceMstAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
@@ -1045,13 +1048,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionServiceRegAsync()
+        public async Task<ResponseModel> fnGetCollectionServiceRegAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
@@ -1060,13 +1063,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionSubjectAsync()
+        public async Task<ResponseModel> fnGetCollectionSubjectAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collSubject.Find(new BsonDocument()).ToListAsync();
@@ -1075,13 +1078,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionUserAsync()
+        public async Task<ResponseModel> fnGetCollectionUserAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collUser.Find(new BsonDocument()).ToListAsync();
@@ -1090,13 +1093,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionUserInfoAsync()
+        public async Task<ResponseModel> fnGetCollectionUserInfoAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
@@ -1105,13 +1108,13 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }
-        public async Task<ResponeModel> fnGetCollectionCheckIOAsync()
+        public async Task<ResponseModel> fnGetCollectionCheckIOAsync()
         {
-            ResponeModel res = new ResponeModel();
+            ResponseModel res = new ResponseModel();
             try
             {
                 var data = await _collCheckIO.Find(new BsonDocument()).ToListAsync();
@@ -1120,7 +1123,7 @@ namespace Application.Service
             catch (System.Exception ex)
             {
 
-                return new ResponeModel("EX001", ex.Message);
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }

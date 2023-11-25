@@ -1,4 +1,5 @@
-﻿using Application.IService;
+﻿using Application.Authorization;
+using Application.IService;
 using Application.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace ASM_Student_MS.Controllers
 {
-    [Authorize]
-    [Route("ASM/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -43,7 +43,8 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
 
-        [Authorize]
+        //[Authorize]
+        [HasPermission("ASM")]
         [HttpPost("Test")]
         public async Task<IActionResult> Test()
         {
