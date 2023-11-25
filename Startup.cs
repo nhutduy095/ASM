@@ -61,7 +61,7 @@ namespace ASM_Student_MS
                     Version = "v1",
                     Description = "Description for the API goes here."
                 });
-
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
                 /*c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header. Example : 'Bearer + [space] + token'",
