@@ -653,20 +653,22 @@ namespace ASM_Student_MS.Controllers
         }
         #endregion
 
-[HasPermission("ASM")]
-        [HttpPost("GetScheduleForUser")]
-        public async Task<IActionResult> fnGetScheduleForUser(CollectionServiceMst collectionServiceMst)
+        [HasPermission("ASM")]
+        [HttpGet("GetScheduleForUser")]
+        public async Task<IActionResult> fnGetScheduleForUser(string userId,int month,int year)
         {
             try
             {
-                var res = _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, string.Empty);
+                var res =await _iServices.fnGetScheduleForUserAsync(userId, month, year);
                 return Ok(res);
-                return Ok("res");
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
             return BadRequest(new { message = "Error" });
-        }    }
+        
+        }
+    }
 }

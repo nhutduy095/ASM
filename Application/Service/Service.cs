@@ -57,7 +57,7 @@ namespace Application.Service
             //_collMarkDtl1 = database.GetCollection<CollectionMarkDtl1>("tblMark_Dtl1");
             _collRoom = database.GetCollection<CollectionRoom>("tblRoom");
             _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
-           // _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblSchedule_Dtl");
+            _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblSchedule_Dtl");
             //_collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
             _collServiceMst = database.GetCollection<CollectionServiceMst>("tblServiceMst");
             _collServiceReg = database.GetCollection<CollectionServiceReg>("tblService_Reg");
@@ -1023,6 +1023,26 @@ namespace Application.Service
                 var fillter = Builders<CollectionScheduleDtl>.Filter.Eq(x => x.DtlId, dtlId);
                 var data = await _collScheduleDtl.Aggregate()
                    .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                //var fillter = Builders<CollectionScheduleDtl>.Filter.Where(x=>x.UserId:userId && x.Day);
+                //var data = await _collScheduleDtl.Aggregate()
+                //   .Match({ userId}).ToListAsync();
+
+                var data = _collScheduleDtl.AsQueryable().Where(x=>x.UserId==userId && DateTime.Parse(x.Day).Year==year&& DateTime.Parse(x.Day).Month == month && x.IsActive).ToList();
+                //var data = _collScheduleDtl.AsQueryable().Where(x=>x.UserId== userId && x.IsActive).ToList();
                 res.Data = data;
             }
             catch (System.Exception ex)

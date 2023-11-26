@@ -15,6 +15,7 @@ namespace Application.Entities
         public string Shift { get; set; }
         public string RoomId { get; set; }
         public string ClassId { get; set; }
+        public string TeacherId { get; set; }
         public string SubjectId { get; set; }
     }
 }

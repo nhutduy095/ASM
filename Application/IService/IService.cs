@@ -50,6 +50,7 @@ namespace Application.IService
         Task<ResponseModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId);
         Task<ResponseModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId);
         Task<ResponseModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId);
+        Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year);
         Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId);
         Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId);
         Task<ResponseModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId);
