@@ -7,6 +7,7 @@ namespace Application.IService.Configuration
     interface IExecutionContextAccessor
     {
         string UserId { get; }
+        string UserType { get; }
         //string UserName { get; }
 
         //string DeptCd { get; }

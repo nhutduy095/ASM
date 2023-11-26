@@ -20,7 +20,7 @@ namespace Application.Service
     public class Services : IServices
     {
         private IMongoCollection<CollectionClass> _collClass;
-        private  IMongoCollection<CollectionUserInfo> _collUserInfo;
+        private IMongoCollection<CollectionUserInfo> _collUserInfo;
         private IMongoCollection<CollectionUser> _collUser;
         private IMongoCollection<CollectionCommon> _collCommon;
         private IMongoCollection<CollectionDepartment> _collDept;
@@ -59,7 +59,7 @@ namespace Application.Service
             _collSchedule = database.GetCollection<CollectionSchedule>("tblSchedule");
             _collScheduleDtl = database.GetCollection<CollectionScheduleDtl>("tblSchedule_Dtl");
             //_collCheckIO = database.GetCollection<CollectionCheckIO>("tblCheckIO");
-            _collServiceMst = database.GetCollection<CollectionServiceMst>("tblServiceMst");
+            _collServiceMst = database.GetCollection<CollectionServiceMst>("tblService_Mst");
             _collServiceReg = database.GetCollection<CollectionServiceReg>("tblService_Reg");
             _collSubject = database.GetCollection<CollectionSubject>("tblSubject");
 
@@ -75,8 +75,8 @@ namespace Application.Service
                 //UpdateDefinition<Playlist> update = Builders<Playlist>.Update.AddToSet<string>("movieIds", movieId);
                 //await _playlistCollection.UpdateOneAsync(filter, update);
                 var dataUser = await _collUser.Find(new BsonDocument()).ToListAsync();
-                
-                var userinfor = dataUser.FirstOrDefault(x=>x.UserId==reqData.username);
+
+                var userinfor = dataUser.FirstOrDefault(x => x.UserId == reqData.username);
                 if (userinfor == null)
                 {
                     return new ResponseModel(ErrorMessage.Error0002, "User không tồn tại");
@@ -94,6 +94,7 @@ namespace Application.Service
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                     new Claim("userId", userInfo.UserId),
+                    new Claim("userType", userInfo.UserType),
                 };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -103,20 +104,20 @@ namespace Application.Service
                     signingCredentials: signIn);
                 //res.ErrMessage = new JwtSecurityTokenHandler().WriteToken(token);
                 var loginRes = new LoginRespone();
-                loginRes.Token= new JwtSecurityTokenHandler().WriteToken(token);
+                loginRes.Token = new JwtSecurityTokenHandler().WriteToken(token);
                 loginRes.UserInfo = userInfo;
                 res.Data = loginRes;
             }
             catch (System.Exception ex)
             {
 
-                return new ResponseModel(ErrorMessage.Error0001,ex.Message);
+                return new ResponseModel(ErrorMessage.Error0001, ex.Message);
             }
             return res;
         }
         #endregion
         #region class
-        public async Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass,string userId) {
+        public async Task<ResponseModel> fnCoUCollectionClassAsync(List<CollectionClass> lstClass, string userId) {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
@@ -212,7 +213,7 @@ namespace Application.Service
                 {
                     foreach (var itm in lstCommon)
                     {
-                        var fillter = Builders<CollectionClass>.Filter.Eq("CommonCd", itm.CommonCd);
+                        var fillter = Builders<CollectionCommon>.Filter.Eq("CommonCd", itm.CommonCd);
 
                         var dataColCommon = await _collCommon.Find(new BsonDocument()).ToListAsync();
 
@@ -314,7 +315,7 @@ namespace Application.Service
                         await _collDept.ReplaceOneAsync(x => x.DeptId == department.DeptId, department, new ReplaceOptions { IsUpsert = true });//update
                     }
 
-                    
+
                     // Made it here without error? Let's commit the transaction
                     await session.CommitTransactionAsync();
 
@@ -713,11 +714,11 @@ namespace Application.Service
                 {
                     foreach (var itm in lstMarkDtl1)
                     {
-                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("Id", itm._id);
+                        var fillter = Builders<CollectionMarkDtl>.Filter.Eq("MarkDtlId", itm.MarkDtlId);
 
                         var dataColMarkDtl1 = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
 
-                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x._id == itm._id);
+                        var markDtl1Info = dataColMarkDtl1.FirstOrDefault(x => x.MarkDtlId == itm.MarkDtlId);
                         if (markDtl1Info == null)
                         {
                             itm.CreateBy = userId;
@@ -729,7 +730,7 @@ namespace Application.Service
                         {
                             itm.UpdateBy = userId;
                             itm.UpdateDate = dt;
-                            await _collMarkDtl1.ReplaceOneAsync(x => x._id == itm._id, itm, new ReplaceOptions { IsUpsert = true });//update
+                            await _collMarkDtl1.ReplaceOneAsync(x => x.MarkDtlId == itm.MarkDtlId, itm, new ReplaceOptions { IsUpsert = true });//update
                         }
 
                     }
@@ -1041,7 +1042,7 @@ namespace Application.Service
                 //var data = await _collScheduleDtl.Aggregate()
                 //   .Match({ userId}).ToListAsync();
 
-                var data = _collScheduleDtl.AsQueryable().Where(x=>x.UserId==userId && DateTime.Parse(x.Day).Year==year&& DateTime.Parse(x.Day).Month == month && x.IsActive).ToList();
+                var data = _collScheduleDtl.AsQueryable().Where(x => x.UserId == userId && DateTime.Parse(x.Day).Year == year && DateTime.Parse(x.Day).Month == month && x.IsActive).ToList();
                 //var data = _collScheduleDtl.AsQueryable().Where(x=>x.UserId== userId && x.IsActive).ToList();
                 res.Data = data;
             }
@@ -1136,6 +1137,7 @@ namespace Application.Service
             return res;
         }
         #endregion
+        #region serviceMst
         public async Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -1148,11 +1150,11 @@ namespace Application.Service
                 try
                 {
 
-                    var fillter = Builders<CollectionServiceMst>.Filter.Eq("ServiceId", serviceMst.ServiceId);
+                    var fillter = Builders<CollectionServiceMst>.Filter.Eq("IdService", serviceMst.IdService);
 
                     var dataColServiceMst = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
 
-                    var serviceMstInfo = dataColServiceMst.FirstOrDefault(x => x.ServiceId == serviceMst.ServiceId);
+                    var serviceMstInfo = dataColServiceMst.FirstOrDefault(x => x.IdService == serviceMst.IdService);
                     if (serviceMstInfo == null)
                     {
                         serviceMst.CreateBy = userId;
@@ -1164,7 +1166,7 @@ namespace Application.Service
                     {
                         serviceMst.UpdateBy = userId;
                         serviceMst.UpdateDate = dt;
-                        await _collServiceMst.ReplaceOneAsync(x => x.ServiceId == serviceMst.ServiceId, serviceMst, new ReplaceOptions { IsUpsert = true });//update
+                        await _collServiceMst.ReplaceOneAsync(x => x.IdService == serviceMst.IdService, serviceMst, new ReplaceOptions { IsUpsert = true });//update
                     }
 
 
@@ -1181,7 +1183,65 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task<ResponseModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId)
+        public async Task<ResponseModel> fnGetCollectionServiceMstAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collServiceMst.Find(new BsonDocument())
+                    .SortBy(x => x.IdService)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionServiceMstByIdAsync(string serviceId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionServiceMst>.Filter.Eq(x => x.IdService, serviceId);
+                var data = await _collServiceMst.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollServiceForComboAsync()
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collServiceMst.Find(new BsonDocument())
+                    .SortBy(x => x.IdService)
+                    .ToListAsync();
+                res.Data = data.Where(x=>x.IsActive).Select(x=>new { 
+                    ServiceId=x.IdService,
+                    ServiceName = x.ServiceName
+                }).ToList();
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region serviceReg
+        public async Task<ResponseModel> fnCoUCollectionServiceRegAsync(CollectionServiceReg serviceReg, string userId)
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
@@ -1192,28 +1252,31 @@ namespace Application.Service
                 session.StartTransaction();
                 try
                 {
-                    foreach (var itm in lstServiceReg)
+                  
+                    var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
+
+                    var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
+
+                    var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
+                    if (serviceRegInfo == null)
                     {
-                        var fillter = Builders<CollectionServiceReg>.Filter.Eq("Id", itm.DtlID);
-
-                        var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
-
-                        var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == itm.DtlID);
-                        if (serviceRegInfo == null)
-                        {
-                            itm.CreateBy = userId;
-                            itm.CreateDate = dt;
-                            await _collServiceReg.InsertOneAsync(itm);
-
-                        }
-                        else
-                        {
-                            itm.UpdateBy = userId;
-                            itm.UpdateDate = dt;
-                            await _collServiceReg.ReplaceOneAsync(x => x.DtlID == itm.DtlID, itm, new ReplaceOptions { IsUpsert = true });//update
-                        }
+                        serviceReg.Requester = userId;
+                        serviceReg.CreateBy = userId;
+                        serviceReg.CreateDate = dt;
+                        serviceReg.RequestDate = dt;
+                        await _collServiceReg.InsertOneAsync(serviceReg);
 
                     }
+                    else
+                    {
+                        serviceReg.CreateBy = serviceRegInfo.CreateBy;
+                        serviceReg.CreateDate = serviceRegInfo.CreateDate;
+                        serviceReg.UpdateBy = userId;
+                        serviceReg.UpdateDate = dt;
+                        await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+                    
                     // Made it here without error? Let's commit the transaction
                     await session.CommitTransactionAsync();
 
@@ -1224,9 +1287,48 @@ namespace Application.Service
                     await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
+                //client.d
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collServiceReg.Find(new BsonDocument())
+                    .SortBy(x => x.ServiceId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionServiceRegByIdAsync(string serviceId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionServiceReg>.Filter.Eq(x => x.ServiceId, serviceId);
+                var data = await _collServiceReg.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region subject
         public async Task<ResponseModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -1272,6 +1374,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionSubjectAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collSubject.Find(new BsonDocument())
+                    .SortBy(x => x.SubjectId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionSubjectByIdAsync(string subjectId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionSubject>.Filter.Eq(x => x.SubjectId, subjectId);
+                var data = await _collSubject.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region user
         public async Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -1317,6 +1457,44 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollectionUserAsync(RequestPaging request)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collUser.Find(new BsonDocument())
+                    .SortBy(x => x.UserId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollectionUserByIdAsync(string userId)
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var fillter = Builders<CollectionUser>.Filter.Eq(x => x.UserId, userId);
+                var data = await _collUser.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                res.Data = data;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
+        #endregion
+        #region userinfo
         public async Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId)
         {
             ResponseModel res = new ResponseModel();
@@ -1340,7 +1518,14 @@ namespace Application.Service
                             itm.CreateBy = userId;
                             itm.CreateDate = dt;
                             await _collUserInfo.InsertOneAsync(itm);
+                            var user = new CollectionUser();
+                            user.UserId = userId;
+                            user.Password = "123456789a";
+                            user.UserType = userId;
+                            user.UserGroup = userId;
+                            user.IsLocked = false;
 
+                            await _collUser.InsertOneAsync(user);
                         }
                         else
                         {
@@ -1363,21 +1548,16 @@ namespace Application.Service
             }
             return res;
         }
-
-        
-        
-        
-        
-        
-        
-        
-        
-        public async Task<ResponseModel> fnGetCollectionServiceMstAsync()
+        public async Task<ResponseModel> fnGetCollectionUserInfoAsync(RequestPaging request)
         {
             ResponseModel res = new ResponseModel();
             try
             {
-                var data = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
+                var data = await _collUserInfo.Find(new BsonDocument())
+                    .SortBy(x => x.UserId)
+                    .Skip((request.Page - 1) * request.PerPage)
+                    .Limit(request.PerPage)
+                    .ToListAsync();
                 res.Data = data;
             }
             catch (System.Exception ex)
@@ -1387,12 +1567,14 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task<ResponseModel> fnGetCollectionServiceRegAsync()
+        public async Task<ResponseModel> fnGetCollectionUserInfoByIdAsync(string userId)
         {
             ResponseModel res = new ResponseModel();
             try
             {
-                var data = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
+                var fillter = Builders<CollectionUserInfo>.Filter.Eq(x => x.UserId, userId);
+                var data = await _collUserInfo.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
                 res.Data = data;
             }
             catch (System.Exception ex)
@@ -1402,52 +1584,80 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task<ResponseModel> fnGetCollectionSubjectAsync()
+        #endregion
+        #region Code for Winform
+        public async Task<ResponseModel> fnGetDataPointforUserAsync(GetDataPointForReq request)
         {
-            ResponseModel res = new ResponseModel();
+            var res = new ResponseModel();
             try
             {
-                var data = await _collSubject.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
+                
+                var data = from a in _collMarks.AsQueryable()
+                           join b in _collMarkDtl.AsQueryable() on a.MarkId equals b.MarkId
+                           join c in _collUserInfo.AsQueryable() on a.UserId equals c.UserId
+                           join d in _collClass.AsQueryable() on c.IdClass equals d.ClassId
+                           join aa in _collMajor.AsQueryable() on d.MajorID equals aa.MajorID
+                           join aaa in _collSubject.AsQueryable() on b.SubjectId equals aaa.SubjectId
+                           join aaaa in _collUserInfo.AsQueryable() on b.Teacher equals aaaa.UserId
+                           where a.UserId == request.userId && (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
+                           select new
+                           {
+                               a.MarkId,
+                               b.MarkDtlId,
+                               a.UserId,
+                               LastName=c.FirstName + c.LastName,
+                               AveragePointsMst = a.AveragePoints,
+                               b.AveragePoints,
+                               b.Teacher,
+                               b.SubjectId,
+                               TotalCreditPass=a.TotalCredit,
+                               aa.NumberOfCredits,
+                               a.TotalFail,
+                               a.TotalNotYet,
+                               a.TotalPass,
+                               a.TotalStuding,
+                               SubjectName="["+ b.SubjectId + "] "+aaa.SubjectName,
+                              TeacherName=aaaa.FirstName+ aaaa.LastName
+                           };
+                var dats = data.AsEnumerable().ToList()
+                .GroupBy(x => new { x.MarkId, x.UserId, x.LastName, x.AveragePointsMst,x.TotalCreditPass, x.TotalFail,x.TotalNotYet,x.TotalPass,x.TotalStuding,x.NumberOfCredits })
+                .Select(x => new
+                {
+                    MarkId=x.Key.MarkId,
+                    UserId = x.Key.UserId,
+                    LastName = x.Key.LastName,
+                    TotalCreditPass = x.Key.TotalCreditPass,
+                    NumberOfCredits = x.Key.NumberOfCredits,
+                    TotalFail = x.Key.TotalFail,
+                    TotalNotYet = x.Key.TotalNotYet,
+                    TotalPass = x.Key.TotalPass,
+                    TotalStuding = x.Key.TotalStuding,
+                    AveragePointsMst = x.Key.AveragePointsMst,
+                    Details = x.ToList(),
+                });
+                res.Data = dats.FirstOrDefault();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
 
-                return new ResponseModel("EX001", ex.Message);
+                return new ResponseModel(ErrorMessage.Error0001, ex.Message);
             }
             return res;
         }
-        public async Task<ResponseModel> fnGetCollectionUserAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collUser.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
+        #endregion
 
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        public async Task<ResponseModel> fnGetCollectionUserInfoAsync()
-        {
-            ResponseModel res = new ResponseModel();
-            try
-            {
-                var data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
-                res.Data = data;
-            }
-            catch (System.Exception ex)
-            {
 
-                return new ResponseModel("EX001", ex.Message);
-            }
-            return res;
-        }
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

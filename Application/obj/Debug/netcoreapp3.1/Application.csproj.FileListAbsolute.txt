@@ -30,10 +30,10 @@ D:\BaiTap\HK4-2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.Assem
 D:\BaicuaVk\HK4_2\ASM\Application\bin\Debug\netcoreapp3.1\Application.deps.json
 D:\BaicuaVk\HK4_2\ASM\Application\bin\Debug\netcoreapp3.1\Application.dll
 D:\BaicuaVk\HK4_2\ASM\Application\bin\Debug\netcoreapp3.1\Application.pdb
+D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.AssemblyReference.cache
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.GeneratedMSBuildEditorConfig.editorconfig
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.AssemblyInfoInputs.cache
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.AssemblyInfo.cs
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.CoreCompileInputs.cache
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.dll
 D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.pdb
-D:\BaicuaVk\HK4_2\ASM\Application\obj\Debug\netcoreapp3.1\Application.csproj.AssemblyReference.cache

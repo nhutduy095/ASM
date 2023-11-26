@@ -34,6 +34,7 @@ namespace Application.Authorization
             try
             {
                 var userID = _executionContextAccessor.UserId;
+                var userType = _executionContextAccessor.UserType;
 
                 if (userID == null)
                 {
@@ -47,7 +48,17 @@ namespace Application.Authorization
                     return;
                 }
 
-                
+                if (!AuthorizeAsync(attribute.Name, userType))
+                {
+                    var res = new { success = false, returnMess = "No permission", returnMessCode = ErrorMessage.Error0004 };
+                    msg = JsonConvert.SerializeObject(res);
+                    bytes = Encoding.UTF8.GetBytes(msg);
+                    httpContext.Response.StatusCode = 403;
+                    httpContext.Response.ContentType = "application/json";
+                    _ = httpContext.Response.Body.WriteAsync(bytes, 0, bytes.Length);
+                    context.Fail();
+                    return;
+                }
 
                 context.Succeed(requirement);
             }
@@ -62,7 +73,17 @@ namespace Application.Authorization
             }
         }
 
-       
+        private bool AuthorizeAsync(string permission, string userType)
+        {
+            var arr = permission.Split("_");
+            var arra = arr[0];
+            var arrb = arr[1];
+            if (userType != "A" && (userType != arra && userType != arrb))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 
     internal class HasPermissionsAuthorizationHandler : AttributeAuthorizationHandler<

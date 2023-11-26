@@ -41,5 +41,30 @@ namespace Application.Service.Configuration
                 }
             }
         }
+        public string UserType
+        {
+            get
+            {
+                try
+                {
+                    if (_httpContextAccessor
+                    .HttpContext?
+                    .User?
+                    .Claims?
+                    .SingleOrDefault(x => x.Type == "userType")?
+                    .Value != null)
+                    {
+                        return _httpContextAccessor.HttpContext.User.Claims.Single(
+                            x => x.Type == "userType").Value;
+                    }
+
+                    throw new ApplicationException("User context is not available");
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+        }
     }
 }

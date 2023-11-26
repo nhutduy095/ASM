@@ -11,7 +11,7 @@ namespace Application.Entities
         public int MarkId { get; set; }
         public string SubjectId { get; set; }
         public string Teacher {  get; set; }
-        public float AveragePoints { get; set; }
-        public string Seaon { get; set; }
+        public decimal AveragePoints { get; set; }
+        public string Season { get; set; }
     }
 }

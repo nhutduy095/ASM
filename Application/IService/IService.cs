@@ -31,11 +31,17 @@ namespace Application.IService
         Task<ResponseModel> fnGetCollectionScheduleByIdAsync(int scheduleId);
         Task<ResponseModel> fnGetCollectionScheduleDtlAsync(RequestPaging request);
         Task<ResponseModel> fnGetCollectionScheduleDtlByIdAsync(int dtlId);
-        Task<ResponseModel> fnGetCollectionServiceMstAsync();
-        Task<ResponseModel> fnGetCollectionServiceRegAsync();
-        Task<ResponseModel> fnGetCollectionSubjectAsync();
-        Task<ResponseModel> fnGetCollectionUserAsync();
-        Task<ResponseModel> fnGetCollectionUserInfoAsync();
+        Task<ResponseModel> fnGetCollectionServiceMstAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollServiceForComboAsync();
+        Task<ResponseModel> fnGetCollectionServiceMstByIdAsync(string serviceId);
+        Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionServiceRegByIdAsync(string serviceId);
+        Task<ResponseModel> fnGetCollectionSubjectAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionSubjectByIdAsync(string subjectId);
+        Task<ResponseModel> fnGetCollectionUserAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionUserByIdAsync(string userId);
+        Task<ResponseModel> fnGetCollectionUserInfoAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionUserInfoByIdAsync(string userId);
         Task<ResponseModel> fnGetCollectionCheckIOAsync(RequestPaging request);
         Task<ResponseModel> fnGetCollectionCheckIOByIdAsync(string userId);
         Task<ResponseModel> Login(LoginRequest reqData);
@@ -53,11 +59,11 @@ namespace Application.IService
         Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year);
         Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId);
         Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId);
-        Task<ResponseModel> fnCoUCollectionServiceRegAsync(List<CollectionServiceReg> lstServiceReg, string userId);
+        Task<ResponseModel> fnCoUCollectionServiceRegAsync(CollectionServiceReg serviceReg, string userId);
         Task<ResponseModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId);
         Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId);
         Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId);
-
+        Task<ResponseModel> fnGetDataPointforUserAsync(GetDataPointForReq request);
 
     }
 }

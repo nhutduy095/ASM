@@ -7,7 +7,7 @@ namespace Application.Entities
 {
     public class CollectionServiceMst:EntityBase
     {
-        public string ServiceId { get; set; }
+        public string IdService { get; set; }
         public string ServiceName { get; set; }
         public string ServiceType { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using Application.Authorization;
 using Application.Entities;
 using Application.IService;
+using Application.IService.Configuration;
 using Application.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,12 @@ namespace ASM_Student_MS.Controllers
     public class MasterDataController : ControllerBase
     {
         private readonly IServices _iServices;
+        //private readonly IExecutionContextAccessor _executionContextAccessor;
+
         public MasterDataController(IServices iServices)
         {
             _iServices = iServices;
+            //_executionContextAccessor = executionContextAccessor;
         }
         #region class
         [HasPermission("ASM_T_S")]
@@ -118,7 +122,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionCommonAsync(lstCollectionCommon, string.Empty);
+                var res =await _iServices.fnCoUCollectionCommonAsync(lstCollectionCommon, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -135,9 +139,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionDepartmentAsync(collectionDepartment, string.Empty);
+                var res =await _iServices.fnCoUCollectionDepartmentAsync(collectionDepartment, string.Empty);
                 return Ok(res);
-                //return Ok("res");
             }
             catch (Exception ex)
             {
@@ -186,9 +189,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionMajorAsync(collectionMajor, string.Empty);
+                var res =await _iServices.fnCoUCollectionMajorAsync(collectionMajor, string.Empty);
                 return Ok(res);
-                return Ok("res");
             }
             catch (Exception ex)
             {
@@ -237,7 +239,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionMajorDtlAsync(lstCollectionMajorDtl, string.Empty);
+                var res =await _iServices.fnCoUCollectionMajorDtlAsync(lstCollectionMajorDtl, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -287,7 +289,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionMarksAsync(collectionMarks, string.Empty);
+                var res =await _iServices.fnCoUCollectionMarksAsync(collectionMarks, string.Empty);
                 return Ok(res);
                 return Ok("res");
             }
@@ -338,7 +340,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionMarkDtlAsync(lstCollectionMarkDtl, string.Empty);
+                var res =await _iServices.fnCoUCollectionMarkDtlAsync(lstCollectionMarkDtl, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -388,7 +390,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionMarkDtl1Async(lstCollectionMarkDtl1, string.Empty);
+                var res =await _iServices.fnCoUCollectionMarkDtl1Async(lstCollectionMarkDtl1, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -438,9 +440,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionRoomAsync(collectionRoom, string.Empty);
+                var res =await _iServices.fnCoUCollectionRoomAsync(collectionRoom, string.Empty);
                 return Ok(res);
-                return Ok("res");
             }
             catch (Exception ex)
             {
@@ -489,9 +490,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionScheduleAsync(collectionSchedule, string.Empty);
+                var res =await _iServices.fnCoUCollectionScheduleAsync(collectionSchedule, string.Empty);
                 return Ok(res);
-                return Ok("res");
             }
             catch (Exception ex)
             {
@@ -540,7 +540,7 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionScheduleDtlAsync(lstCollectionScheduleDtl, string.Empty);
+                var res =await _iServices.fnCoUCollectionScheduleDtlAsync(lstCollectionScheduleDtl, string.Empty);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -590,9 +590,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res = _iServices.fnCoUCollectionCheckIOAsync(collectionCheckIO, string.Empty);
+                var res =await _iServices.fnCoUCollectionCheckIOAsync(collectionCheckIO, string.Empty);
                 return Ok(res);
-                return Ok("res");
             }
             catch (Exception ex)
             {
@@ -634,16 +633,15 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         #endregion
-        #region
+        #region servicemMst
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateServiceMst")]
         public async Task<IActionResult> CreateOrUpdateServiceMst(CollectionServiceMst collectionServiceMst)
         {
             try
             {
-                var res = _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, string.Empty);
+                var res =await _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, string.Empty);
                 return Ok(res);
-                return Ok("res");
             }
             catch (Exception ex)
             {
@@ -651,8 +649,55 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
-        #endregion
 
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionServiceMst")]
+        public async Task<IActionResult> fnGetCollectionServiceMst(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionServiceMstAsync(request); 				return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionServiceMstById")]
+        public async Task<IActionResult> fnGetCollectionServiceMstById(string ServiceId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionServiceMstByIdAsync(ServiceId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HasPermission("ASM")]
+        [HttpGet("GetCollServiceForComb")]
+        public async Task<IActionResult> fnGetCollServiceForCombo()
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollServiceForComboAsync(); 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion		
         [HasPermission("ASM")]
         [HttpGet("GetScheduleForUser")]
         public async Task<IActionResult> fnGetScheduleForUser(string userId,int month,int year)
@@ -668,7 +713,223 @@ namespace ASM_Student_MS.Controllers
                 return BadRequest(ex.Message);
             }
             return BadRequest(new { message = "Error" });
-        
+        }
+        #region serviceReg
+        [HasPermission("ASM")]
+        [HttpPost("CreateOrUpdateServiceReg")]
+        public async Task<IActionResult> CreateOrUpdateServiceReg(CollectionServiceReg collectionServiceReg)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var res =await _iServices.fnCoUCollectionServiceRegAsync(collectionServiceReg, userId);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionServiceReg")]
+        public async Task<IActionResult> fnGetCollectionServiceReg(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionServiceRegAsync(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionServiceRegById")]
+        public async Task<IActionResult> fnGetCollectionServiceRegById(string ServiceId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionServiceRegByIdAsync(ServiceId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region subject
+        [HasPermission("ASM")]
+        [HttpPost("CreateOrUpdateSubject")]
+        public async Task<IActionResult> CreateOrUpdateSubject(CollectionSubject collectionSubject)
+        {
+            try
+            {
+                var res =await _iServices.fnCoUCollectionSubjectAsync(collectionSubject, string.Empty);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionSubject")]
+        public async Task<IActionResult> fnGetCollectionSubject(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionSubjectAsync(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionSubject")]
+        public async Task<IActionResult> fnGetCollectionSubjectById(string subjectId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionSubjectByIdAsync(subjectId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region user
+        [HasPermission("ASM")]
+        [HttpPost("CreateOrUpdateUser")]
+        public async Task<IActionResult> CreateOrUpdateUser(CollectionUser collectionUser)
+        {
+            try
+            {
+                var res =await  _iServices.fnCoUCollectionUserAsync(collectionUser, string.Empty);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionUser")]
+        public async Task<IActionResult> fnGetCollectionUser(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionUserAsync(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionUser")]
+        public async Task<IActionResult> fnGetCollectionUserById(string userId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionUserByIdAsync(userId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        #region userinfo
+        [HasPermission("ASM")]
+        [HttpPost("CreateOrUpdateUserInfo")]
+        public async Task<IActionResult> CreateOrUpdateUserInfo(List<CollectionUserInfo> lstCollectionUserInfo)
+        {
+            try
+            {
+                var res =await _iServices.fnCoUCollectionUserInfoAsync(lstCollectionUserInfo, string.Empty);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpPost("GetCollectionUserInfo")]
+        public async Task<IActionResult> fnGetCollectionUserInfo(RequestPaging request)
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollectionUserInfoAsync(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        [HasPermission("ASM")]
+        [HttpGet("GetCollectionUserInfo")]
+        public async Task<IActionResult> fnGetCollectionUserInfoById(string userId)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollectionUserInfoByIdAsync(userId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+        #endregion
+        [HasPermission("ASM")]
+        [HttpPost("GetDataPointforUser")]
+        public async Task<IActionResult> fnGetDataPointforUser(GetDataPointForReq res)
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetDataPointforUserAsync(res);
+                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
         }
     }
 }

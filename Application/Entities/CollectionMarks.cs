@@ -9,7 +9,12 @@ namespace Application.Entities
     {
         public int MarkId { get; set; }
         public string UserId { get; set; }
-        public float AveragePoints { get; set; }
+        public decimal AveragePoints { get; set; }
+        public int TotalCredit { get; set; }
+        public int TotalPass { get; set; }
+        public int TotalFail { get; set; }
+        public int TotalStuding { get; set; }
+        public int TotalNotYet { get; set; }
         public string ClassId { get; set; }
     }
 }

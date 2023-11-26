@@ -11,6 +11,7 @@ namespace Application.Entities
         public string CommonNameEn { get; set; }
         public string CommonNameVi { get; set; }
         public string GroupCommon { get; set; }
+        public bool IsLocked { get; set; }
     }
 }
 

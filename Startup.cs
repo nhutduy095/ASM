@@ -43,6 +43,8 @@ namespace ASM_Student_MS
             services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
             services.AddTransient<IServices, Services>();
             services.AddControllers();
+            //services.AddControllersWithViews()
+            //    .AddNewtonsoftJson(optoins);
             //services.AddSwaggerGen(c =>
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ASM_Student_MS", Version = "v1" });
