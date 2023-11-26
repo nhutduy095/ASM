@@ -76,8 +76,12 @@ namespace Application.Authorization
         private bool AuthorizeAsync(string permission, string userType)
         {
             var arr = permission.Split("_");
-            var arra = arr[0];
-            var arrb = arr[1];
+            if (arr.Length == 1)
+            {
+                return true;
+            }
+            var arra = arr[1];
+            var arrb = arr[2];
             if (userType != "A" && (userType != arra && userType != arrb))
             {
                 return false;
