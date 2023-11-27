@@ -546,7 +546,7 @@ namespace Application.Service
                 try
                 {
 
-                    var fillter = Builders<CollectionMarks>.Filter.Eq("MajorID", marks.MarkId);
+                    var fillter = Builders<CollectionMarks>.Filter.Eq("MarkId", marks.MarkId);
 
                     var dataColMarks = await _collMarks.Find(new BsonDocument()).ToListAsync();
 
@@ -1599,7 +1599,7 @@ namespace Application.Service
                            join aa in _collMajor.AsQueryable() on d.MajorID equals aa.MajorID
                            join aaa in _collSubject.AsQueryable() on b.SubjectId equals aaa.SubjectId
                            join aaaa in _collUserInfo.AsQueryable() on b.Teacher equals aaaa.UserId
-                           where a.UserId == request.userId && (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
+                           where a.UserId == request.userId //&& (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
                            select new
                            {
                                a.MarkId,
