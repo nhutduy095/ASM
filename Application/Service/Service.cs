@@ -546,7 +546,7 @@ namespace Application.Service
                 try
                 {
 
-                    var fillter = Builders<CollectionMarks>.Filter.Eq("MajorID", marks.MarkId);
+                    var fillter = Builders<CollectionMarks>.Filter.Eq("MarkId", marks.MarkId);
 
                     var dataColMarks = await _collMarks.Find(new BsonDocument()).ToListAsync();
 
