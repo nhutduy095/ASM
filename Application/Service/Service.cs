@@ -1245,40 +1245,69 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
-            client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
+            var clientNew = new MongoClient(ConnectionURI);
+            using (var session = await clientNew.StartSessionAsync())
             {
                 //Begin transaction
-                session.StartTransaction();
+                //if (!session.IsInTransaction)
+                //{
+                //    session.a();
+                //}
+        //        session.StartTransaction(new TransactionOptions(
+        //        readConcern: ReadConcern.Snapshot,
+        //writeConcern: WriteConcern.WMajority));
+                var transactionOptions = new TransactionOptions(writeConcern: WriteConcern.WMajority);
+                // Step 3: Define the sequence of operations to perform inside the transactions
+                var cancellationToken = System.Threading.CancellationToken.None;
+                //try
+                //{
+                //    session.StartTransaction(new TransactionOptions(
+                //readConcern: ReadConcern.Snapshot,
+        //writeConcern: WriteConcern.WMajority));
+
+                //}
+                //catch
+                //{
+                //    session.AbortTransaction();
+                //    session.StartTransaction();
+
+                //}
                 try
                 {
-                  
-                    var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
-
-                    var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
-
-                    var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
-                    if (serviceRegInfo == null)
+                    var result = session.WithTransaction(
+                    (s, ct) =>
                     {
-                        serviceReg.Requester = userId;
-                        serviceReg.CreateBy = userId;
-                        serviceReg.CreateDate = dt;
-                        serviceReg.RequestDate = dt;
-                        await _collServiceReg.InsertOneAsync(serviceReg);
+                        var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
 
-                    }
-                    else
-                    {
-                        serviceReg.CreateBy = serviceRegInfo.CreateBy;
-                        serviceReg.CreateDate = serviceRegInfo.CreateDate;
-                        serviceReg.UpdateBy = userId;
-                        serviceReg.UpdateDate = dt;
-                        await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
-                    }
+                        var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
 
+                        var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
+                        if (serviceRegInfo == null)
+                        {
+                            serviceReg.Requester = userId;
+                            serviceReg.CreateBy = userId;
+                            serviceReg.CreateDate = dt;
+                            serviceReg.RequestDate = dt;
+                            await _collServiceReg.InsertOneAsync(serviceReg);
+
+                        }
+                        else
+                        {
+                            serviceReg._id = serviceRegInfo._id;
+                            serviceReg.CreateBy = serviceRegInfo.CreateBy;
+                            serviceReg.CreateDate = serviceRegInfo.CreateDate;
+                            serviceReg.UpdateBy = userId;
+                            serviceReg.UpdateDate = dt;
+                            await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
+                        }
+
+                        //session.AbortTransaction();
+                        // Made it here without error? Let's commit the transaction
+                        await session.CommitTransactionAsync();
+                    },
+                    transactionOptions,
+                    cancellationToken);
                     
-                    // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
@@ -1287,6 +1316,8 @@ namespace Application.Service
                     await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
+                
+
                 //client.d
             }
             return res;
