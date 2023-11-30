@@ -20,5 +20,6 @@ namespace Application.Entities
         public string MajorFrom { get; set; }
         public string MajorTo { get; set; }
         public string ReciveDate { get; set; }
+        public string Status { get; set; }//N:New,A:Approve,W:Wait,R:reject,C:Cancel
     }
 }

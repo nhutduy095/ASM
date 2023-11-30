@@ -1277,14 +1277,16 @@ namespace Application.Service
                     var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
 
                     var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
-
+                    int dtlLastId = dataColServiceReg.OrderByDescending(x => x.DtlID).FirstOrDefault().DtlID + 1;
                     var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
                     if (serviceRegInfo == null)
                     {
+                        serviceReg.DtlID = dtlLastId;
                         serviceReg.Requester = userId;
                         serviceReg.CreateBy = userId;
                         serviceReg.CreateDate = dt;
                         serviceReg.RequestDate = dt;
+                        serviceReg.Status = "N";
                         await _collServiceReg.InsertOneAsync(serviceReg);
 
                     }
