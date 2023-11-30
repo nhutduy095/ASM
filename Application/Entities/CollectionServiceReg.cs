@@ -16,5 +16,9 @@ namespace Application.Entities
         public string RejectType { get; set; } 
         public string Remark { get; set;}
         public string Remark1 { get; set; }
+        public string SubjectId { get; set; }
+        public string MajorFrom { get; set; }
+        public string MajorTo { get; set; }
+        public string ReciveDate { get; set; }
     }
 }

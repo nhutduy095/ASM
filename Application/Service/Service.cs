@@ -448,6 +448,26 @@ namespace Application.Service
             }
             return res;
         }
+        public async Task<ResponseModel> fnGetCollMajorComboAsync()
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collMajor.Find(new BsonDocument())
+                    .SortBy(x => x.MajorID)
+                    .ToListAsync();
+                res.Data = data.Where(x => x.IsActive).Select(x => new {
+                    MajorID = x.MajorID,
+                    MajorName = x.MajorName
+                }).ToList();
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
         #endregion
         #region majorDtl
         public async Task<ResponseModel> fnCoUCollectionMajorDtlAsync(List<CollectionMajorDtl> lstMajorDtl, string userId)
@@ -1245,14 +1265,15 @@ namespace Application.Service
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
-            client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
+            var clientNew = new MongoClient(ConnectionURI);
+            
+
+            using (var session = await clientNew.StartSessionAsync())
             {
-                //Begin transaction
-                session.StartTransaction();
+                
                 try
                 {
-                  
+                    
                     var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
 
                     var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
@@ -1269,6 +1290,7 @@ namespace Application.Service
                     }
                     else
                     {
+                        serviceReg._id = serviceRegInfo._id;
                         serviceReg.CreateBy = serviceRegInfo.CreateBy;
                         serviceReg.CreateDate = serviceRegInfo.CreateDate;
                         serviceReg.UpdateBy = userId;
@@ -1276,17 +1298,16 @@ namespace Application.Service
                         await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
                     }
 
-                    
-                    // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
+                
+
                 //client.d
             }
             return res;
@@ -1296,12 +1317,35 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             try
             {
-                var data = await _collServiceReg.Find(new BsonDocument())
-                    .SortBy(x => x.ServiceId)
-                    .Skip((request.Page - 1) * request.PerPage)
-                    .Limit(request.PerPage)
-                    .ToListAsync();
-                res.Data = data;
+                //var data = await _collServiceReg.Find(new BsonDocument())
+                //    .SortBy(x => x.ServiceId)
+                //    .Skip((request.Page - 1) * request.PerPage)
+                //    .Limit(request.PerPage)
+                //    .ToListAsync();
+                var data = from a in _collServiceReg.AsQueryable()
+                           join b in _collServiceMst.AsQueryable() on a.ServiceId equals b.IdService
+                           join c in _collUserInfo.AsQueryable() on a.Requester equals c.UserId
+                           join d in _collUserInfo.AsQueryable() on a.Confirmby equals d.UserId into tmpUser
+                           join e in _collMajor.AsQueryable() on a.MajorFrom equals e.MajorID into tmpMajorF
+                           join f in _collMajor.AsQueryable() on a.MajorTo equals f.MajorID into tmpMajorT
+                           join k in _collSubject.AsQueryable() on a.SubjectId equals k.SubjectId into tmpSubject
+                           from k in tmpSubject.DefaultIfEmpty()
+                           from f in tmpMajorT.DefaultIfEmpty()
+                           from e in tmpMajorF.DefaultIfEmpty()
+                           from d in tmpUser.DefaultIfEmpty()
+                               //where a.UserId == request.userId //&& (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
+                           select new
+                           {
+                               a._id,a.DtlID,a.ReciveDate,a.Requester,a.Remark,a.RejectType,a.Remark1,a.Confirmby,a.ConfirmDate,
+                               a.SubjectId,a.CreateBy,a.CreateDate,a.IsActive,a.MajorFrom,a.MajorTo,a.ServiceId,
+                               ServiceName = "[" + b.IdService + "] " + b.ServiceName,
+                               RequestName = c.FirstName + c.LastName,
+                               ConfirmByName = d.FirstName + d.LastName,
+                               MajorFromName = "[" + e.MajorID + "] " + e.MajorName,
+                               MajorToName = "[" + f.MajorID + "] " + f.MajorName,
+                               SubjectName = "[" + k.SubjectId + "] " + k.SubjectName
+                           };
+                res.Data = data.AsEnumerable().ToList();
             }
             catch (System.Exception ex)
             {
@@ -1371,6 +1415,29 @@ namespace Application.Service
                     await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
+            }
+            return res;
+        }
+        public async Task<ResponseModel> fnGetCollSubjectForComboAsync()
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+               
+                var data = await _collSubject.Find(new BsonDocument())
+                    .SortBy(x => x.SubjectId)
+                    .ToListAsync();
+                var dt = data.Where(x => x.IsActive).Select(x => new
+                {
+                    SubjectId = x.SubjectId,
+                    SubjectName = x.SubjectName
+                }).ToList();
+                res.Data = dt;
+            }
+            catch (System.Exception ex)
+            {
+
+                return new ResponseModel("EX001", ex.Message);
             }
             return res;
         }

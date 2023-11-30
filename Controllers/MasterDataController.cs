@@ -231,6 +231,24 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+
+        [HasPermission("ASM_T_S")]
+        [HttpGet("GetCollMajorCombo")]
+        public async Task<IActionResult> fnGetCollMajorCombo()
+        {
+            try
+            {
+
+                var result = await _iServices.fnGetCollMajorComboAsync();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
         #endregion
         #region majordtl
         [HasPermission("ASM")]
@@ -731,6 +749,7 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+
         [HasPermission("ASM")]
         [HttpPost("GetCollectionServiceReg")]
         public async Task<IActionResult> fnGetCollectionServiceReg(RequestPaging request)
@@ -766,6 +785,22 @@ namespace ASM_Student_MS.Controllers
         }
         #endregion
         #region subject
+        [HasPermission("ASM")]
+        [HttpGet("GetCollSubjectForCombo")]
+        public async Task<IActionResult> fnGetCollSubjectForCombo()
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollSubjectForComboAsync();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateSubject")]
         public async Task<IActionResult> CreateOrUpdateSubject(CollectionSubject collectionSubject)

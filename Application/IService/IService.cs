@@ -64,6 +64,8 @@ namespace Application.IService
         Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId);
         Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId);
         Task<ResponseModel> fnGetDataPointforUserAsync(GetDataPointForReq request);
+        Task<ResponseModel> fnGetCollSubjectForComboAsync();
+        Task<ResponseModel> fnGetCollMajorComboAsync();
 
     }
 }
