@@ -121,10 +121,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstClass)
@@ -150,16 +150,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+           // }
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionClassAsync(RequestPaging request)
@@ -205,10 +205,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstCommon)
@@ -234,16 +234,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionCommonAsync(RequestPaging request)
@@ -289,10 +289,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -317,16 +317,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionDepartmentAsync(RequestPaging request)
@@ -372,10 +372,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -400,16 +400,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionMajorAsync(RequestPaging request)
@@ -475,10 +475,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstMajorDtl)
@@ -504,16 +504,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionMajorDtlAsync(RequestPaging request)
@@ -559,10 +559,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -587,16 +587,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionMarksAsync(RequestPaging request)
@@ -642,10 +642,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstMarkDtl)
@@ -671,16 +671,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionMarkDtlAsync(RequestPaging request)
@@ -726,10 +726,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstMarkDtl1)
@@ -755,16 +755,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionMarkDtl1Async(RequestPaging request)
@@ -810,10 +810,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -838,16 +838,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionRoomAsync(RequestPaging request)
@@ -893,10 +893,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -921,16 +921,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionScheduleAsync(RequestPaging request)
@@ -976,10 +976,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstScheduleDtl)
@@ -1005,16 +1005,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionScheduleDtlAsync(RequestPaging request)
@@ -1080,10 +1080,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -1108,16 +1108,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionCheckIOAsync(RequestPaging request)
@@ -1163,10 +1163,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -1191,16 +1191,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                   //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionServiceMstAsync(RequestPaging request)
@@ -1268,8 +1268,8 @@ namespace Application.Service
             var clientNew = new MongoClient(ConnectionURI);
             
 
-            using (var session = await clientNew.StartSessionAsync())
-            {
+            //using (var session = await clientNew.StartSessionAsync())
+            //{
                 
                 try
                 {
@@ -1311,7 +1311,7 @@ namespace Application.Service
                 
 
                 //client.d
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request)
@@ -1380,10 +1380,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -1408,16 +1408,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollSubjectForComboAsync()
@@ -1486,10 +1486,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
 
@@ -1514,16 +1514,16 @@ namespace Application.Service
 
 
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionUserAsync(RequestPaging request)
@@ -1569,10 +1569,10 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
-            using (var session = await client.StartSessionAsync())
-            {
-                //Begin transaction
-                session.StartTransaction();
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
                 try
                 {
                     foreach (var itm in lstUserInfo)
@@ -1605,16 +1605,16 @@ namespace Application.Service
 
                     }
                     // Made it here without error? Let's commit the transaction
-                    await session.CommitTransactionAsync();
+                    //await session.CommitTransactionAsync();
 
                 }
                 catch (System.Exception ex)
                 {
                     //rollback
-                    await session.AbortTransactionAsync();
+                    //await session.AbortTransactionAsync();
                     return new ResponseModel("EX001", ex.Message);
                 }
-            }
+            //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionUserInfoAsync(RequestPaging request)

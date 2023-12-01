@@ -8,7 +8,7 @@ namespace Application.Entities
     public class CollectionMajorDtl:EntityBase
     {
         public string MajorID { get; set; }
-        public string SubjectID { get; set; }
+        public string SubjectId { get; set; }
         public bool IsLocked { get; set; }
         public string MajorType { get; set; }
     }
