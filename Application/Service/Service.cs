@@ -1053,7 +1053,7 @@ namespace Application.Service
             }
             return res;
         }
-        public async Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year)
+        public async Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year, string shift)
         {
             ResponseModel res = new ResponseModel();
             try
@@ -1062,7 +1062,12 @@ namespace Application.Service
                 //var data = await _collScheduleDtl.Aggregate()
                 //   .Match({ userId}).ToListAsync();
 
-                var data = _collScheduleDtl.AsQueryable().Where(x => x.UserId == userId && DateTime.Parse(x.Day).Year == year && DateTime.Parse(x.Day).Month == month && x.IsActive).ToList();
+                var data = _collScheduleDtl.AsQueryable()
+                    .Where(x => x.UserId == userId && DateTime.Parse(x.Day).Year == year 
+                    && DateTime.Parse(x.Day).Month == month 
+                    && x.IsActive
+                    && (string.IsNullOrEmpty(shift) || x.Shift==shift)
+                    ).ToList();
                 //var data = _collScheduleDtl.AsQueryable().Where(x=>x.UserId== userId && x.IsActive).ToList();
                 res.Data = data;
             }
@@ -1625,19 +1630,21 @@ namespace Application.Service
             try
             {
                 List<CollectionUserInfo> data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
-                    //.SortBy(x => x.UserId)
-                    //.Skip((request.Page - 1) * request.PerPage)
-                    //.Limit(request.PerPage)
-                    //.ToListAsync();
-                if(request.Filltering != null)
+                //.SortBy(x => x.UserId)
+                //.Skip((request.Page - 1) * request.PerPage)
+                //.Limit(request.PerPage)
+                //.ToListAsync();
+                Filltering fillter = HelperInfo.ConvertToType<Filltering>(request.Filltering);
+                if (fillter != null)
                 {
-                    List<Filltering> lstFillter = HelperInfo.ConvertListToType<Filltering>(request.Filltering);
-                    bool fillterUserId = lstFillter.Any(x => x.CollName == "UserId");
-                    if (fillterUserId)
+                    if (fillter.CollName == "UserId")
                     {
-                        string valueSeasrch = lstFillter.FirstOrDefault(x => x.CollName == "UserId").ValueDefault;
-                        data = data.Where(x => x.UserId==valueSeasrch);
+                        data = (List<CollectionUserInfo>)data.Where(x => x.UserId.Contains(fillter.ValueDefault));
                     }
+
+
+                        
+                    
                 }
                 res.Data = data;
             }

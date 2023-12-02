@@ -718,11 +718,11 @@ namespace ASM_Student_MS.Controllers
         #endregion		
         [HasPermission("ASM")]
         [HttpGet("GetScheduleForUser")]
-        public async Task<IActionResult> fnGetScheduleForUser(string userId,int month,int year)
+        public async Task<IActionResult> fnGetScheduleForUser(string userId,int month,int year, string shift)
         {
             try
             {
-                var res =await _iServices.fnGetScheduleForUserAsync(userId, month, year);
+                var res =await _iServices.fnGetScheduleForUserAsync(userId, month, year, shift);
                 return Ok(res);
 
             }
