@@ -903,11 +903,12 @@ namespace ASM_Student_MS.Controllers
         #region userinfo
         [HasPermission("ASM")]
         [HttpPost("CreateOrUpdateUserInfo")]
-        public async Task<IActionResult> CreateOrUpdateUserInfo(List<CollectionUserInfo> lstCollectionUserInfo)
+        public async Task<IActionResult> CreateOrUpdateUserInfo(CollectionUserInfo collectionUserInfo)
         {
             try
             {
-                var res =await _iServices.fnCoUCollectionUserInfoAsync(lstCollectionUserInfo, string.Empty);
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var res =await _iServices.fnCoUCollectionUserInfoAsync(collectionUserInfo, userId);
                 return Ok(res);
             }
             catch (Exception ex)

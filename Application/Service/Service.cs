@@ -1564,7 +1564,7 @@ namespace Application.Service
         }
         #endregion
         #region userinfo
-        public async Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId)
+        public async Task<ResponseModel> fnCoUCollectionUserInfoAsync(CollectionUserInfo userInfo, string userId)
         {
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
@@ -1575,35 +1575,37 @@ namespace Application.Service
             //    session.StartTransaction();
                 try
                 {
-                    foreach (var itm in lstUserInfo)
+                    
+                    
+                    var fillter = Builders<CollectionUserInfo>.Filter.Eq("UserId", userInfo.UserId);
+
+                    var dataColUserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+
+                    var userInfoInfo = dataColUserInfo.FirstOrDefault(x => x.UserId == userInfo.UserId);
+                    if (userInfoInfo == null)
                     {
-                        var fillter = Builders<CollectionUserInfo>.Filter.Eq("UserId", itm.UserId);
-
-                        var dataColUserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
-
-                        var userInfoInfo = dataColUserInfo.FirstOrDefault(x => x.UserId == itm.UserId);
-                        if (userInfoInfo == null)
-                        {
-                            itm.CreateBy = userId;
-                            itm.CreateDate = dt;
-                            await _collUserInfo.InsertOneAsync(itm);
-                            var user = new CollectionUser();
-                            user.UserId = userId;
-                            user.Password = "123456789a";
-                            user.UserType = userId;
-                            user.UserGroup = userId;
-                            user.IsLocked = false;
-
-                            await _collUser.InsertOneAsync(user);
-                        }
-                        else
-                        {
-                            itm.UpdateBy = userId;
-                            itm.UpdateDate = dt;
-                            await _collUserInfo.ReplaceOneAsync(x => x.UserId == itm.UserId, itm, new ReplaceOptions { IsUpsert = true });//update
-                        }
-
+                        userInfo.CreateBy = userId;
+                        userInfo.CreateDate = dt;
+                        await _collUserInfo.InsertOneAsync(userInfo);
+                        var user = new CollectionUser();
+                        user.UserId = userInfo.UserId;
+                        user.Password = "123456789a";
+                        user.UserType = userInfo.UserType;
+                        user.UserGroup = string.Empty;
+                        user.IsLocked = false;
+                        user.CreateBy = userId;
+                        user.CreateDate = dt;
+                        await _collUser.InsertOneAsync(user);
                     }
+                    else
+                    {
+                        userInfo._id = userInfoInfo._id;
+                        userInfo.UpdateBy = userId;
+                        userInfo.UpdateDate = dt;
+                        await _collUserInfo.ReplaceOneAsync(x => x.UserId == userInfo.UserId, userInfo, new ReplaceOptions { IsUpsert = true });//update
+                    }
+
+                    
                     // Made it here without error? Let's commit the transaction
                     //await session.CommitTransactionAsync();
 
@@ -1622,11 +1624,21 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             try
             {
-                var data = await _collUserInfo.Find(new BsonDocument())
-                    .SortBy(x => x.UserId)
-                    .Skip((request.Page - 1) * request.PerPage)
-                    .Limit(request.PerPage)
-                    .ToListAsync();
+                List<CollectionUserInfo> data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+                    //.SortBy(x => x.UserId)
+                    //.Skip((request.Page - 1) * request.PerPage)
+                    //.Limit(request.PerPage)
+                    //.ToListAsync();
+                if(request.Filltering != null)
+                {
+                    List<Filltering> lstFillter = HelperInfo.ConvertListToType<Filltering>(request.Filltering);
+                    bool fillterUserId = lstFillter.Any(x => x.CollName == "UserId");
+                    if (fillterUserId)
+                    {
+                        string valueSeasrch = lstFillter.FirstOrDefault(x => x.CollName == "UserId").ValueDefault;
+                        data = data.Where(x => x.UserId==valueSeasrch);
+                    }
+                }
                 res.Data = data;
             }
             catch (System.Exception ex)
