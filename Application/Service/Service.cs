@@ -1744,10 +1744,220 @@ namespace Application.Service
         #endregion
 
 
+        public async Task<ResponseModel> fnGetCollDeptForComboAsync()
+        {
+            ResponseModel res = new ResponseModel();
+            try
+            {
+                var data = await _collDept.Find(new BsonDocument())
+                    .SortBy(x => x.DeptId)
+                    .ToListAsync();
+                res.Data = data.Where(x => x.IsActive).Select(x => new {
+                    DeptId = x.DeptId,
+                    DeptName = x.DeptName
+                }).ToList();
+            }
+            catch (System.Exception ex)
+            {
 
+                return new ResponseModel("EX001", ex.Message);
+            }
+            return res;
+        }
 
+        public async Task<ResponseModel> fnfnInputPointForStudentAsync(InputPointRequest request, string userId)
+        {
+            ResponseModel res = new ResponseModel();
+            string dt = CommonBase.fnGertDateTimeNow();
+            client = new MongoClient(ConnectionURI);
+            //using (var session = await client.StartSessionAsync())
+            //{
+            //    //Begin transaction
+            //    session.StartTransaction();
+            try
+            {
+                var lstUsserInfo = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+                var lstMarks = await _collMarks.Find(new BsonDocument()).ToListAsync();
+                var lstMarkDtl = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
+                //var lstMarkDtl1 = await _collMarkDtl1.Find(new BsonDocument()).ToListAsync();
+                var student = lstUsserInfo.FirstOrDefault(x => x.UserId == request.StudentId && x.IsActive);
+                int MarkId = lstMarks.Count()>0? lstMarks.OrderByDescending(x => x.MarkId).FirstOrDefault().MarkId + 1:1;
+                int MarkDtlId = lstMarkDtl.Count() > 0 ? lstMarkDtl.OrderByDescending(x => x.MarkDtlId).FirstOrDefault().MarkDtlId + 1:1;
+                var markk = lstMarks.FirstOrDefault(x => x.UserId == request.StudentId);
+                if (markk ==null)
+                {
+                    
+                    if (student == null)
+                    {
+                        return new ResponseModel(ErrorMessage.Error0002,"Học sinh không tồn tại!");
+                    }
+                    var marMst = new CollectionMarks()
+                    {
+                        UserId=request.StudentId,
+                        ClassId= student.IdClass,
+                        AveragePoints= request.AveragePoints,
+                        TotalCredit=0,
+                        TotalFail=0,
+                        TotalNotYet=0,
+                        TotalPass=0,
+                        TotalStuding=0,
+                        CreateBy=userId,
+                        CreateDate=dt,
+                        MarkId= MarkId
+                    };
+                    await _collMarks.InsertOneAsync(marMst);
+                    var markDtl = new CollectionMarkDtl()
+                    {
+                        MarkId=MarkId,
+                        MarkDtlId= MarkDtlId,
+                        SubjectId=request.SubjectId,
+                        AveragePoints=request.AveragePoints,
+                        CreateBy=userId,
+                        CreateDate=dt,
+                        Teacher=userId,
+                        PointASM=request.PointASM,
+                        PointDiligence=request.PointDiligence,
+                        PointProtect=request.PointProtect,
+                        Season=request.Season
+                    };
+                    await _collMarkDtl.InsertOneAsync(markDtl);
+                    
+                }
+                else
+                {
+                    if (student == null)
+                    {
+                        return new ResponseModel(ErrorMessage.Error0002, "Học sinh không tồn tại!");
+                    }
+                    var markkdtl = lstMarkDtl.FirstOrDefault(x => x.MarkId == markk.MarkId && x.SubjectId==request.SubjectId);
 
+                    if (markkdtl != null)
+                    {
+                        var markDtl = new CollectionMarkDtl()
+                        {
+                            _id= markkdtl._id,
+                            MarkId = markkdtl.MarkId,
+                            MarkDtlId = markkdtl.MarkDtlId,
+                            SubjectId = request.SubjectId,
+                            AveragePoints = request.AveragePoints,
+                            CreateBy = markkdtl.CreateBy,
+                            CreateDate = markkdtl.CreateDate,
+                            Teacher = userId,
+                            PointASM = request.PointASM,
+                            PointDiligence = request.PointDiligence,
+                            PointProtect = request.PointProtect,
+                            UpdateBy=userId,
+                            UpdateDate=dt,
+                            Season = request.Season
 
+                        };
+                        await _collMarkDtl.ReplaceOneAsync(x => x.MarkDtlId == markDtl.MarkDtlId, markDtl, new ReplaceOptions { IsUpsert = true });//update
+                    }
+                    else
+                    {
+                        var markDtl = new CollectionMarkDtl()
+                        {
+                            MarkId = markk.MarkId,
+                            MarkDtlId = MarkDtlId,
+                            SubjectId = request.SubjectId,
+                            AveragePoints = request.AveragePoints,
+                            CreateBy = userId,
+                            CreateDate = dt,
+                            Teacher = userId,
+                            PointASM = request.PointASM,
+                            PointDiligence = request.PointDiligence,
+                            PointProtect = request.PointProtect,
+                            Season = request.Season
+                        };
+                        await _collMarkDtl.InsertOneAsync(markDtl);
+                    }
+                    
+                    var lstdtl = await _collMarkDtl.Find(new BsonDocument()).ToListAsync();
+                    decimal avgpoint = lstdtl.Where(x => x.MarkId == markk.MarkId).Average(x => x.AveragePoints);
+                   
+                    var marMst = new CollectionMarks()
+                    {
+                        _id=markk._id,
+                        UserId = request.StudentId,
+                        ClassId = student.IdClass,
+                        AveragePoints = avgpoint,
+                        TotalCredit = 0,
+                        TotalFail = 0,
+                        TotalNotYet = 0,
+                        TotalPass = 0,
+                        TotalStuding = 0,
+                        CreateBy = markk.CreateBy,
+                        CreateDate = markk.CreateDate,
+                        MarkId = markk.MarkId,
+                        UpdateBy=userId,
+                        UpdateDate=dt
+                    };
+                    await _collMarks.ReplaceOneAsync(x => x.MarkId == marMst.MarkId, marMst, new ReplaceOptions { IsUpsert = true });//update
+                }               
+
+            }
+            catch (System.Exception ex)
+            {
+                //rollback
+                //await session.AbortTransactionAsync();
+                return new ResponseModel("EX001", ex.Message);
+            }
+            //}
+            return res;
+        }
+        public async Task<ResponseModel> fnGetDataPointforTeacherAsync(string userId, string mssv)
+        {
+            var res = new ResponseModel();
+            try
+            {
+
+                var data = from b in _collMarkDtl.AsQueryable()
+                           join a in _collMarks.AsQueryable()  on b.MarkId equals a.MarkId
+                           join c in _collUserInfo.AsQueryable() on a.UserId equals c.UserId
+                           join d in _collClass.AsQueryable() on c.IdClass equals d.ClassId into tmpClass
+                           from d in tmpClass.DefaultIfEmpty()
+                           join aa in _collMajor.AsQueryable() on d.MajorID equals aa.MajorID into tmpMajor
+                           join aaa in _collSubject.AsQueryable() on b.SubjectId equals aaa.SubjectId into tmpSubject
+                           from aaa in tmpSubject.DefaultIfEmpty()
+                           join aaaa in _collUserInfo.AsQueryable() on b.Teacher equals aaaa.UserId //into tmpTecher
+                           
+                           from aa in tmpMajor.DefaultIfEmpty()
+                           //from aa in tmpMajor.DefaultIfEmpty()
+                           where b.Teacher == userId //&& (string.IsNullOrEmpty(mssv) || a.UserId.Contains(mssv))
+                           select new
+                           {
+                               a._id,
+                               a.MarkId,
+                               b.MarkDtlId,
+                               a.UserId,
+                               LastName = c.FirstName + " " + c.LastName,
+                               AveragePointsMst = a.AveragePoints,
+                               b.AveragePoints,
+                               b.Teacher,
+                               b.SubjectId,
+                               TotalCreditPass = a.TotalCredit,
+                               aa.NumberOfCredits,
+                               a.TotalFail,
+                               a.TotalNotYet,
+                               a.TotalPass,
+                               a.TotalStuding,
+                               SubjectName = "[" + b.SubjectId + "] " + aaa.SubjectName,
+                               TeacherName = aaaa.FirstName + aaaa.LastName,
+                               b.PointASM,
+                               b.PointDiligence,
+                               b.PointProtect,
+                               b.Season
+                           };
+
+                res.Data = data.AsEnumerable().ToList() ;
+            }
+            catch (Exception ex)
+            {
+
+                return new ResponseModel(ErrorMessage.Error0001, ex.Message);
+            }
+            return res;
+        }
 
 
 
