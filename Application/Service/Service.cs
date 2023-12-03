@@ -1629,24 +1629,30 @@ namespace Application.Service
             ResponseModel res = new ResponseModel();
             try
             {
-                List<CollectionUserInfo> data = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+                List<CollectionUserInfo> lstData = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
+                
                 //.SortBy(x => x.UserId)
                 //.Skip((request.Page - 1) * request.PerPage)
                 //.Limit(request.PerPage)
                 //.ToListAsync();
-                Filltering fillter = HelperInfo.ConvertToType<Filltering>(request.Filltering);
-                if (fillter != null)
+
+                //Filltering fillter = HelperInfo.ConvertToType<Filltering>(request.Filltering);
+                if (request.Filltering.Count>0)
                 {
+                    var fillter = request.Filltering.FirstOrDefault(x => x.CollName == "UserId");
                     if (fillter.CollName == "UserId")
                     {
-                        data = (List<CollectionUserInfo>)data.Where(x => x.UserId.Contains(fillter.ValueDefault));
+                        var data = lstData.Where(x => x.UserId.Contains(fillter.ValueDefault));
+                        res.Data = data;
+                        return res;
                     }
 
 
-                        
-                    
+
+
                 }
-                res.Data = data;
+                
+                res.Data = lstData;
             }
             catch (System.Exception ex)
             {
@@ -1684,16 +1690,19 @@ namespace Application.Service
                            join b in _collMarkDtl.AsQueryable() on a.MarkId equals b.MarkId
                            join c in _collUserInfo.AsQueryable() on a.UserId equals c.UserId
                            join d in _collClass.AsQueryable() on c.IdClass equals d.ClassId
-                           join aa in _collMajor.AsQueryable() on d.MajorID equals aa.MajorID
-                           join aaa in _collSubject.AsQueryable() on b.SubjectId equals aaa.SubjectId
-                           join aaaa in _collUserInfo.AsQueryable() on b.Teacher equals aaaa.UserId
+                           join aa in _collMajor.AsQueryable() on d.MajorID equals aa.MajorID //into tmpMajor
+                           join aaa in _collSubject.AsQueryable() on b.SubjectId equals aaa.SubjectId //into tmpSubject
+                           join aaaa in _collUserInfo.AsQueryable() on b.Teacher equals aaaa.UserId //into tmpTecher
+                           //from aaaa in tmpTecher.DefaultIfEmpty()
+                           //from aaa in tmpSubject.DefaultIfEmpty()
+                           //from aa in tmpMajor.DefaultIfEmpty()
                            where a.UserId == request.userId //&& (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
                            select new
                            {
                                a.MarkId,
                                b.MarkDtlId,
                                a.UserId,
-                               LastName=c.FirstName + c.LastName,
+                               LastName=c.FirstName +" "+ c.LastName,
                                AveragePointsMst = a.AveragePoints,
                                b.AveragePoints,
                                b.Teacher,
