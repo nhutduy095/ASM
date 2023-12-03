@@ -12,5 +12,6 @@ namespace Application.Model
         /// Count records of a page.
         /// </summary>
         public int? PerPage { get; set; }
+        public List<Filltering> Filltering { get; set; }
     }
 }

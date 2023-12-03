@@ -56,13 +56,13 @@ namespace Application.IService
         Task<ResponseModel> fnCoUCollectionRoomAsync(CollectionRoom room, string userId);
         Task<ResponseModel> fnCoUCollectionScheduleAsync(CollectionSchedule schedule, string userId);
         Task<ResponseModel> fnCoUCollectionScheduleDtlAsync(List<CollectionScheduleDtl> lstScheduleDtl, string userId);
-        Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year);
+        Task<ResponseModel> fnGetScheduleForUserAsync(string userId, int month, int year, string shift);
         Task<ResponseModel> fnCoUCollectionCheckIOAsync(CollectionCheckIO checkIO, string userId);
         Task<ResponseModel> fnCoUCollectionServiceMstAsync(CollectionServiceMst serviceMst, string userId);
         Task<ResponseModel> fnCoUCollectionServiceRegAsync(CollectionServiceReg serviceReg, string userId);
         Task<ResponseModel> fnCoUCollectionSubjectAsync(CollectionSubject subject, string userId);
         Task<ResponseModel> fnCoUCollectionUserAsync(CollectionUser user, string userId);
-        Task<ResponseModel> fnCoUCollectionUserInfoAsync(List<CollectionUserInfo> lstUserInfo, string userId);
+        Task<ResponseModel> fnCoUCollectionUserInfoAsync(CollectionUserInfo userInfo, string userId);
         Task<ResponseModel> fnGetDataPointforUserAsync(GetDataPointForReq request);
         Task<ResponseModel> fnGetCollSubjectForComboAsync();
         Task<ResponseModel> fnGetCollMajorComboAsync();
