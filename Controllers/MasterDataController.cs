@@ -967,5 +967,56 @@ namespace ASM_Student_MS.Controllers
             }
             return BadRequest(new { message = "Error" });
         }
+
+
+        [HasPermission("ASM")]
+        [HttpGet("GetColDeptForCombo")]
+        public async Task<IActionResult> fnGetColDeptForCombo()
+        {
+            try
+            {
+                var result = await _iServices.fnGetCollDeptForComboAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HasPermission("ASM")]
+        [HttpPost("InputPointForStudent")]
+        public async Task<IActionResult> fnInputPointForStudent(InputPointRequest request)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var result = await _iServices.fnfnInputPointForStudentAsync(request,userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
+
+        [HasPermission("ASM")]
+        [HttpGet("GetDataPointforTeacher")]
+        public async Task<IActionResult> fnGetDataPointforTeacher(string mssv)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var result = await _iServices.fnGetDataPointforTeacherAsync(userId,mssv);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest(new { message = "Error" });
+        }
     }
 }

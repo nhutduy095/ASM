@@ -66,6 +66,8 @@ namespace Application.IService
         Task<ResponseModel> fnGetDataPointforUserAsync(GetDataPointForReq request);
         Task<ResponseModel> fnGetCollSubjectForComboAsync();
         Task<ResponseModel> fnGetCollMajorComboAsync();
-
+        Task<ResponseModel> fnGetCollDeptForComboAsync();
+        Task<ResponseModel> fnfnInputPointForStudentAsync(InputPointRequest request, string userId);
+        Task<ResponseModel> fnGetDataPointforTeacherAsync(string userId,string mssv);
     }
 }

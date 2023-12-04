@@ -13,5 +13,8 @@ namespace Application.Entities
         public string Teacher {  get; set; }
         public decimal AveragePoints { get; set; }
         public string Season { get; set; }
+        public decimal PointDiligence { get; set; }
+        public decimal PointASM { get; set; }
+        public decimal PointProtect { get; set; }
     }
 }
