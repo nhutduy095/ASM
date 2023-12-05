@@ -34,7 +34,7 @@ namespace Application.IService
         Task<ResponseModel> fnGetCollectionServiceMstAsync(RequestPaging request);
         Task<ResponseModel> fnGetCollServiceForComboAsync();
         Task<ResponseModel> fnGetCollectionServiceMstByIdAsync(string serviceId);
-        Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request);
+        Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request, string userId, string userType);
         Task<ResponseModel> fnGetCollectionServiceRegByIdAsync(string serviceId);
         Task<ResponseModel> fnGetCollectionSubjectAsync(RequestPaging request);
         Task<ResponseModel> fnGetCollectionSubjectByIdAsync(string subjectId);

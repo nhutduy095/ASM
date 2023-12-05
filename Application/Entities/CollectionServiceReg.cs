@@ -11,7 +11,7 @@ namespace Application.Entities
         public string ServiceId { get; set; }
         public string Requester { get; set; }
         public string RequestDate { get; set; }
-        public string Confirmby { get; set; }
+        public string ConfirmBy { get; set; }
         public string ConfirmDate { get; set; }
         public string FinishConfirmDate { get; set; }
         public string RejectType { get; set; } 

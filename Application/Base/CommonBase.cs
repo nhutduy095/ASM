@@ -8,7 +8,7 @@ namespace Application.Base
     {
         public static string fnGertDateTimeNow()
         {
-            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:t");
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
     }

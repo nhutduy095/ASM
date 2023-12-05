@@ -1172,40 +1172,44 @@ namespace Application.Service
             //{
             //    //Begin transaction
             //    session.StartTransaction();
-                try
+            try
+            {
+
+                var fillter = Builders<CollectionServiceMst>.Filter.Eq("IdService", serviceMst.IdService);
+
+                var dataColServiceMst = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
+
+                var serviceMstInfo = dataColServiceMst.FirstOrDefault(x => x.IdService == serviceMst.IdService);
+                if (serviceMstInfo == null)
                 {
-
-                    var fillter = Builders<CollectionServiceMst>.Filter.Eq("IdService", serviceMst.IdService);
-
-                    var dataColServiceMst = await _collServiceMst.Find(new BsonDocument()).ToListAsync();
-
-                    var serviceMstInfo = dataColServiceMst.FirstOrDefault(x => x.IdService == serviceMst.IdService);
-                    if (serviceMstInfo == null)
-                    {
-                        serviceMst.CreateBy = userId;
-                        serviceMst.CreateDate = dt;
-                        await _collServiceMst.InsertOneAsync(serviceMst);
-
-                    }
-                    else
-                    {
-                        serviceMst.UpdateBy = userId;
-                        serviceMst.UpdateDate = dt;
-                        await _collServiceMst.ReplaceOneAsync(x => x.IdService == serviceMst.IdService, serviceMst, new ReplaceOptions { IsUpsert = true });//update
-                    }
-
-
-                    // Made it here without error? Let's commit the transaction
-                    //await session.CommitTransactionAsync();
+                    serviceMst.CreateBy = userId;
+                    serviceMst.CreateDate = dt;
+                    await _collServiceMst.InsertOneAsync(serviceMst);
 
                 }
-                catch (System.Exception ex)
+                else
                 {
-                    //rollback
-                   //await session.AbortTransactionAsync();
-                    return new ResponseModel("EX001", ex.Message);
+                    serviceMst._id = serviceMstInfo._id;
+                    serviceMst.CreateBy = serviceMstInfo.CreateBy;
+                    serviceMst.CreateDate = serviceMstInfo.CreateDate;
+                    serviceMst.IsActive = serviceMstInfo.IsActive;
+                    serviceMst.UpdateBy = userId;
+                    serviceMst.UpdateDate = dt;
+                    await _collServiceMst.ReplaceOneAsync(x => x.IdService == serviceMst.IdService, serviceMst, new ReplaceOptions { IsUpsert = true });//update
                 }
-            //}
+
+
+                // Made it here without error? Let's commit the transaction
+                //await session.CommitTransactionAsync();
+
+            }
+            catch (System.Exception ex)
+            {
+                //rollback
+                //await session.AbortTransactionAsync();
+                return new ResponseModel("EX001", ex.Message);
+            }
+        //}
             return res;
         }
         public async Task<ResponseModel> fnGetCollectionServiceMstAsync(RequestPaging request)
@@ -1214,11 +1218,19 @@ namespace Application.Service
             try
             {
                 var data = await _collServiceMst.Find(new BsonDocument())
-                    .SortBy(x => x.IdService)
-                    .Skip((request.Page - 1) * request.PerPage)
-                    .Limit(request.PerPage)
                     .ToListAsync();
-                res.Data = data;
+                if (request.Filltering.Count() > 0)
+                {
+                    bool fillterSer = request.Filltering.Any(x => x.CollName == "ServiceId");
+                    string val = request.Filltering.FirstOrDefault(x => x.CollName == "ServiceId").ValueDefault;
+                    res.Data = data.Where(x=>x.IdService.Contains(val));
+
+                }
+                else
+                {
+                    res.Data = data;
+                }
+               
             }
             catch (System.Exception ex)
             {
@@ -1276,50 +1288,58 @@ namespace Application.Service
             //using (var session = await clientNew.StartSessionAsync())
             //{
                 
-                try
-                {
+            try
+            {
                     
-                    var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
+                var fillter = Builders<CollectionServiceReg>.Filter.Eq("DtlID", serviceReg.DtlID);
 
-                    var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
-                    int dtlLastId = dataColServiceReg.OrderByDescending(x => x.DtlID).FirstOrDefault().DtlID + 1;
-                    var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
-                    if (serviceRegInfo == null)
-                    {
-                        serviceReg.DtlID = dtlLastId;
-                        serviceReg.Requester = userId;
-                        serviceReg.CreateBy = userId;
-                        serviceReg.CreateDate = dt;
-                        serviceReg.RequestDate = dt;
-                        serviceReg.Status = "N";
-                        await _collServiceReg.InsertOneAsync(serviceReg);
-
-                    }
-                    else
-                    {
-                        serviceReg._id = serviceRegInfo._id;
-                        serviceReg.CreateBy = serviceRegInfo.CreateBy;
-                        serviceReg.CreateDate = serviceRegInfo.CreateDate;
-                        serviceReg.UpdateBy = userId;
-                        serviceReg.UpdateDate = dt;
-                        await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
-                    }
-
-
-                }
-                catch (System.Exception ex)
+                var dataColServiceReg = await _collServiceReg.Find(new BsonDocument()).ToListAsync();
+                int dtlLastId = dataColServiceReg.OrderByDescending(x => x.DtlID).FirstOrDefault().DtlID + 1;
+                //int servicerId = dataColServiceReg.Count()>0? int.Parse(dataColServiceReg.OrderByDescending(x => x.ServiceId).FirstOrDefault().ServiceId.Substring(3,3)) + 1 : 1;
+                var serviceRegInfo = dataColServiceReg.FirstOrDefault(x => x.DtlID == serviceReg.DtlID);
+                if (serviceRegInfo == null)
                 {
-                    //rollback
-                    //await session.AbortTransactionAsync();
-                    return new ResponseModel("EX001", ex.Message);
+                    //serviceReg.ServiceId = "SV" + servicerId.ToString("{0:D3}");
+                    serviceReg.DtlID = dtlLastId;
+                    serviceReg.Requester = userId;
+                    serviceReg.CreateBy = userId;
+                    serviceReg.CreateDate = dt;
+                    serviceReg.RequestDate = dt;
+                    serviceReg.Status = "N";
+                    await _collServiceReg.InsertOneAsync(serviceReg);
+
                 }
+                else
+                {
+                    serviceReg._id = serviceRegInfo._id;
+                    serviceReg.ServiceId = serviceRegInfo.ServiceId;
+                    serviceReg.SubjectId = serviceRegInfo.SubjectId;
+                    serviceReg.MajorFrom = serviceRegInfo.MajorFrom;
+                    serviceReg.MajorTo = serviceRegInfo.MajorTo;
+                    serviceReg.CreateBy = serviceRegInfo.CreateBy;
+                    serviceReg.CreateDate = serviceRegInfo.CreateDate;
+                    serviceReg.Requester = serviceRegInfo.Requester;
+                    serviceReg.RequestDate = serviceRegInfo.RequestDate;
+                    serviceReg.UpdateBy = userId;
+                    serviceReg.UpdateDate = dt;
+                    await _collServiceReg.ReplaceOneAsync(x => x.DtlID == serviceReg.DtlID, serviceReg, new ReplaceOptions { IsUpsert = true });//update
+                }
+
+
+            }
+            catch (System.Exception ex)
+            {
+                //rollback
+                //await session.AbortTransactionAsync();
+                return new ResponseModel("EX001", ex.Message);
+            }
                 
 
                 //client.d
             //}
             return res;
         }
-        public async Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request)
+        public async Task<ResponseModel> fnGetCollectionServiceRegAsync(RequestPaging request,string userId,string userType)
         {
             ResponseModel res = new ResponseModel();
             try
@@ -1332,7 +1352,7 @@ namespace Application.Service
                 var data = from a in _collServiceReg.AsQueryable()
                            join b in _collServiceMst.AsQueryable() on a.ServiceId equals b.IdService
                            join c in _collUserInfo.AsQueryable() on a.Requester equals c.UserId
-                           join d in _collUserInfo.AsQueryable() on a.Confirmby equals d.UserId into tmpUser
+                           join d in _collUserInfo.AsQueryable() on a.ConfirmBy equals d.UserId into tmpUser
                            join e in _collMajor.AsQueryable() on a.MajorFrom equals e.MajorID into tmpMajorF
                            join f in _collMajor.AsQueryable() on a.MajorTo equals f.MajorID into tmpMajorT
                            join k in _collSubject.AsQueryable() on a.SubjectId equals k.SubjectId into tmpSubject
@@ -1340,11 +1360,11 @@ namespace Application.Service
                            from f in tmpMajorT.DefaultIfEmpty()
                            from e in tmpMajorF.DefaultIfEmpty()
                            from d in tmpUser.DefaultIfEmpty()
-                               //where a.UserId == request.userId //&& (!string.IsNullOrEmpty(request.subjectName) || request.subjectName.Contains(aaa.SubjectName))
+                           //where ((a.Requester == userId && userType == "S") || userType !="S")
                            select new
                            {
-                               a._id,a.DtlID,a.ReciveDate,a.Requester,a.Remark,a.RejectType,a.Remark1,a.Confirmby,a.ConfirmDate,
-                               a.SubjectId,a.CreateBy,a.CreateDate,a.IsActive,a.MajorFrom,a.MajorTo,a.ServiceId,
+                               a._id,a.DtlID,a.ReciveDate,a.Requester,a.Remark,a.RejectType,a.Remark1,a.ConfirmBy,a.ConfirmDate,
+                               a.SubjectId,a.CreateBy,a.CreateDate,a.IsActive,a.MajorFrom,a.MajorTo,a.ServiceId,a.Status,a.RequestDate,
                                ServiceName = "[" + b.IdService + "] " + b.ServiceName,
                                RequestName = c.FirstName + c.LastName,
                                ConfirmByName = d.FirstName + d.LastName,
@@ -1352,7 +1372,7 @@ namespace Application.Service
                                MajorToName = "[" + f.MajorID + "] " + f.MajorName,
                                SubjectName = "[" + k.SubjectId + "] " + k.SubjectName
                            };
-                res.Data = data.AsEnumerable().ToList();
+                res.Data =data.AsEnumerable().ToList().Where(x=>((x.Requester==userId && userType=="S")||(userType !="S" && x.Status !="C")));
             }
             catch (System.Exception ex)
             {
@@ -1389,39 +1409,42 @@ namespace Application.Service
             //{
             //    //Begin transaction
             //    session.StartTransaction();
-                try
+            try
+            {
+
+                var fillter = Builders<CollectionSubject>.Filter.Eq("ServiceId", subject.SubjectId);
+
+                var dataColSubject = await _collSubject.Find(new BsonDocument()).ToListAsync();
+
+                var subjectInfo = dataColSubject.FirstOrDefault(x => x.SubjectId == subject.SubjectId);
+                if (subjectInfo == null)
                 {
-
-                    var fillter = Builders<CollectionSubject>.Filter.Eq("ServiceId", subject.SubjectId);
-
-                    var dataColSubject = await _collSubject.Find(new BsonDocument()).ToListAsync();
-
-                    var subjectInfo = dataColSubject.FirstOrDefault(x => x.SubjectId == subject.SubjectId);
-                    if (subjectInfo == null)
-                    {
-                        subject.CreateBy = userId;
-                        subject.CreateDate = dt;
-                        await _collSubject.InsertOneAsync(subject);
-
-                    }
-                    else
-                    {
-                        subject.UpdateBy = userId;
-                        subject.UpdateDate = dt;
-                        await _collSubject.ReplaceOneAsync(x => x.SubjectId == subject.SubjectId, subject, new ReplaceOptions { IsUpsert = true });//update
-                    }
-
-
-                    // Made it here without error? Let's commit the transaction
-                    //await session.CommitTransactionAsync();
+                    subject.CreateBy = userId;
+                    subject.CreateDate = dt;
+                    await _collSubject.InsertOneAsync(subject);
 
                 }
-                catch (System.Exception ex)
+                else
                 {
-                    //rollback
-                    //await session.AbortTransactionAsync();
-                    return new ResponseModel("EX001", ex.Message);
+                    subject._id = subjectInfo._id;
+                    subject.CreateBy = subjectInfo.CreateBy;
+                    subject.CreateDate = subjectInfo.CreateDate;
+                    subject.UpdateBy = userId;
+                    subject.UpdateDate = dt;
+                    await _collSubject.ReplaceOneAsync(x => x.SubjectId == subject.SubjectId, subject, new ReplaceOptions { IsUpsert = true });//update
                 }
+
+
+                // Made it here without error? Let's commit the transaction
+                //await session.CommitTransactionAsync();
+
+            }
+            catch (System.Exception ex)
+            {
+                //rollback
+                //await session.AbortTransactionAsync();
+                return new ResponseModel("EX001", ex.Message);
+            }
             //}
             return res;
         }
@@ -1454,11 +1477,19 @@ namespace Application.Service
             try
             {
                 var data = await _collSubject.Find(new BsonDocument())
-                    .SortBy(x => x.SubjectId)
-                    .Skip((request.Page - 1) * request.PerPage)
-                    .Limit(request.PerPage)
                     .ToListAsync();
-                res.Data = data;
+                if (request.Filltering.Count()>0)
+                {
+                    bool isFillter = request.Filltering.Any(x => x.CollName == "SubjectId");
+                    var val = request.Filltering.FirstOrDefault(x => x.CollName == "SubjectId").ValueDefault;
+                    res.Data = data.Where(x=>x.SubjectId.Contains(val) && x.IsActive);
+
+                }
+                else
+                {
+                    res.Data = data.Where(x=>x.IsActive);
+                }
+               
             }
             catch (System.Exception ex)
             {
@@ -1630,22 +1661,23 @@ namespace Application.Service
             try
             {
                 List<CollectionUserInfo> lstData = await _collUserInfo.Find(new BsonDocument()).ToListAsync();
-                
+                //dynamic data=
                 //.SortBy(x => x.UserId)
                 //.Skip((request.Page - 1) * request.PerPage)
                 //.Limit(request.PerPage)
                 //.ToListAsync();
 
                 //Filltering fillter = HelperInfo.ConvertToType<Filltering>(request.Filltering);
-                if (request.Filltering.Count>0)
+                if (request.Filltering !=null && request.Filltering.Count>0)
                 {
                     var fillter = request.Filltering.FirstOrDefault(x => x.CollName == "UserId");
-                    if (fillter.CollName == "UserId")
-                    {
-                        var data = lstData.Where(x => x.UserId.Contains(fillter.ValueDefault));
-                        res.Data = data;
-                        return res;
-                    }
+                    string fillterUserType = request.Filltering.FirstOrDefault(x => x.CollName == "UserType").ValueDefault;
+                    bool isfillUserId = request.Filltering.Any(x => x.CollName == "UserId");
+                    bool isfillUserType = request.Filltering.Any(x => x.CollName == "UserType");
+                    var data = lstData.Where(x =>x.IsActive && (!isfillUserId ||(isfillUserId && x.UserId.Contains(fillter.ValueDefault))) && (!isfillUserType || (isfillUserType && x.UserType == fillterUserType)));//
+                    res.Data = data;
+                    return res;
+                    
 
 
 
@@ -1949,7 +1981,7 @@ namespace Application.Service
                                b.Season
                            };
 
-                res.Data = data.AsEnumerable().ToList() ;
+                res.Data = data.AsEnumerable().ToList().Where(x=>string.IsNullOrEmpty(mssv) ||(x.UserId.Contains(mssv)&& !string.IsNullOrEmpty(mssv))) ;
             }
             catch (Exception ex)
             {

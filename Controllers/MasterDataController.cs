@@ -658,7 +658,8 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var res =await _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, string.Empty);
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var res =await _iServices.fnCoUCollectionServiceMstAsync(collectionServiceMst, userId);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -756,7 +757,10 @@ namespace ASM_Student_MS.Controllers
         {
             try
             {
-                var result = await _iServices.fnGetCollectionServiceRegAsync(request);
+                var userId = HttpContext.User.Claims.First(x => x.Type == "userId").Value;
+                var userType = HttpContext.User.Claims.First(x => x.Type == "userType").Value;
+
+                var result = await _iServices.fnGetCollectionServiceRegAsync(request, userId, userType);
 
                 return Ok(result);
             }

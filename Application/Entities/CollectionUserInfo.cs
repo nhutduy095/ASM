@@ -18,5 +18,6 @@ namespace Application.Entities
         public string MailAddress { get; set; }
         public string Address { get; set; }
         public string ParentsPhoneNumber { get; set; }
+        public string MajorID { get; set; }
     }
 }
