@@ -13,6 +13,7 @@ namespace Application.Entities
         public string RequestDate { get; set; }
         public string Confirmby { get; set; }
         public string ConfirmDate { get; set; }
+        public string FinishConfirmDate { get; set; }
         public string RejectType { get; set; } 
         public string Remark { get; set;}
         public string Remark1 { get; set; }
