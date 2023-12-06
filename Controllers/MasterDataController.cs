@@ -955,6 +955,7 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         #endregion
+
         [HasPermission("ASM")]
         [HttpPost("GetDataPointforUser")]
         public async Task<IActionResult> fnGetDataPointforUser(GetDataPointForReq res)

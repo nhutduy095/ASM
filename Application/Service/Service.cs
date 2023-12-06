@@ -1775,7 +1775,6 @@ namespace Application.Service
         }
         #endregion
 
-
         public async Task<ResponseModel> fnGetCollDeptForComboAsync()
         {
             ResponseModel res = new ResponseModel();
@@ -1796,7 +1795,6 @@ namespace Application.Service
             }
             return res;
         }
-
         public async Task<ResponseModel> fnfnInputPointForStudentAsync(InputPointRequest request, string userId)
         {
             ResponseModel res = new ResponseModel();
