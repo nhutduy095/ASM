@@ -25,7 +25,7 @@ namespace ASM_Student_MS.Controllers
             //_executionContextAccessor = executionContextAccessor;
         }
         #region class
-        [HasPermission("ASM_T_S")]
+        [HasPermission("ASM_T_S")] //atribute name
         [HttpPost("GetCollectionClass")]
         public async Task<IActionResult> fnGetCollectionClass(RequestPaging request)
         {
@@ -938,7 +938,7 @@ namespace ASM_Student_MS.Controllers
             return BadRequest(new { message = "Error" });
         }
         [HasPermission("ASM")]
-        [HttpGet("GetCollectionUserInfo")]
+        [HttpGet("GetCollectionUserInfoById")]
         public async Task<IActionResult> fnGetCollectionUserInfoById(string userId)
         {
             try

@@ -24,7 +24,7 @@ namespace Application.Authorization
         }
 
         protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context,
+            AuthorizationHandlerContext context,//core của aspnetcore
             HasPermissionAuthorizationRequirement requirement,
             HasPermissionAttribute attribute)
         {

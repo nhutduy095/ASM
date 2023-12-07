@@ -9,8 +9,8 @@ namespace Application.Authorization
 {
     public abstract class AttributeAuthorizationHandler<TRequirement, TAttribute>
         : AuthorizationHandler<TRequirement>
-        where TRequirement : IAuthorizationRequirement
-        where TAttribute : Attribute
+        where TRequirement : IAuthorizationRequirement //yêu cầu xác thực
+        where TAttribute : Attribute//thuộc tính xác thực
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TRequirement requirement)
         {

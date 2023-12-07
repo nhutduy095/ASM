@@ -134,6 +134,7 @@ namespace Application.Service
                         var dataColClass = await _collClass.Find(new BsonDocument()).ToListAsync();
 
                         var classInfo = dataColClass.FirstOrDefault(x => x.ClassId == itm.ClassId);
+
                         if (classInfo == null)
                         {
                             itm.CreateBy = userId;
@@ -293,39 +294,44 @@ namespace Application.Service
             //{
             //    //Begin transaction
             //    session.StartTransaction();
-                try
+            try
+            {
+                int len = department.DeptId.Length;
+                if (len > 89)
                 {
+                    //return MergeStageWhenMatched---
+                }
+                var fillter = Builders<CollectionDepartment>.Filter.Eq("DeptId", department.DeptId);
 
-                    var fillter = Builders<CollectionDepartment>.Filter.Eq("DeptId", department.DeptId);
+                var dataColDept = await _collDept.Find(new BsonDocument()).ToListAsync();
 
-                    var dataColDept = await _collDept.Find(new BsonDocument()).ToListAsync();
+                var deptInfo = dataColDept.FirstOrDefault(x => x.DeptId == department.DeptId);
 
-                    var deptInfo = dataColDept.FirstOrDefault(x => x.DeptId == department.DeptId);
-                    if (deptInfo == null)
-                    {
-                        department.CreateBy = userId;
-                        department.CreateDate = dt;
-                        await _collDept.InsertOneAsync(department);
-
-                    }
-                    else
-                    {
-                        department.UpdateBy = userId;
-                        department.UpdateDate = dt;
-                        await _collDept.ReplaceOneAsync(x => x.DeptId == department.DeptId, department, new ReplaceOptions { IsUpsert = true });//update
-                    }
-
-
-                    // Made it here without error? Let's commit the transaction
-                    //await session.CommitTransactionAsync();
+                if (deptInfo == null)
+                {
+                    department.CreateBy = userId;
+                    department.CreateDate = dt;
+                    await _collDept.InsertOneAsync(department);
 
                 }
-                catch (System.Exception ex)
+                else
                 {
-                    //rollback
-                    //await session.AbortTransactionAsync();
-                    return new ResponseModel("EX001", ex.Message);
+                    department.UpdateBy = userId;
+                    department.UpdateDate = dt;
+                    await _collDept.ReplaceOneAsync(x => x.DeptId == department.DeptId, department, new ReplaceOptions { IsUpsert = true });//update
                 }
+
+
+                // Made it here without error? Let's commit the transaction
+                //await session.CommitTransactionAsync();
+
+            }
+            catch (System.Exception ex)
+            {
+                //rollback
+                //await session.AbortTransactionAsync();
+                return new ResponseModel("EX001", ex.Message);
+            }
             //}
             return res;
         }
@@ -1797,6 +1803,8 @@ namespace Application.Service
         }
         public async Task<ResponseModel> fnfnInputPointForStudentAsync(InputPointRequest request, string userId)
         {
+            string mssv = request.StudentId;
+
             ResponseModel res = new ResponseModel();
             string dt = CommonBase.fnGertDateTimeNow();
             client = new MongoClient(ConnectionURI);
@@ -1814,6 +1822,13 @@ namespace Application.Service
                 int MarkId = lstMarks.Count()>0? lstMarks.OrderByDescending(x => x.MarkId).FirstOrDefault().MarkId + 1:1;
                 int MarkDtlId = lstMarkDtl.Count() > 0 ? lstMarkDtl.OrderByDescending(x => x.MarkDtlId).FirstOrDefault().MarkDtlId + 1:1;
                 var markk = lstMarks.FirstOrDefault(x => x.UserId == request.StudentId);
+                var fillter = Builders<CollectionUserInfo>.Filter.Eq(x => x.UserId, mssv);
+                var data = await _collUserInfo.Aggregate()
+                   .Match(fillter).FirstOrDefaultAsync();
+                if (data == null)
+                {
+                    return new ResponseModel(ErrorMessage.Error0002, "Học sinh không tồn tại!");
+                }
                 if (markk ==null)
                 {
                     
